@@ -7,6 +7,13 @@ export interface toastType {
 }
 export type statusOptionType = "danger" | "info" | "success" | "warning" | ""
 
+export interface ResponseObjectType{
+    data:any
+}
+export interface ResponseErrorObjectType{
+    response:any,
+    request:any
+}
 
 export interface requestedInformationType{
     id?: number,

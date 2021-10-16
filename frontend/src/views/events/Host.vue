@@ -613,8 +613,10 @@
 		}
 	}
 	
+	import axios from 'axios'
 
 	import CONSTANTS from '@/consumables/constants'
+	import { ResponseObjectType, ResponseErrorObjectType } from '@/consumables/typings'
 	import { useToasts } from '@/consumables/plugins'
 
 	import { defineComponent, reactive, ref } from 'vue'
@@ -703,16 +705,7 @@
 			])
 
 		// METHODS
-			const fakeRequest = (fakeAddress: string, data:any) => {
-				let milliseconds = 200
-				const date = Date.now()
-				let currentDate = null
-				do {
-					currentDate = Date.now()
-				}
-				while (currentDate - date < milliseconds)
-				return true
-			}
+			
 			const next = ()=>{
 				if (step.value < totalSteps.value){
 					step.value += 1
@@ -749,19 +742,17 @@
 				let responseData = {}
 				let event_code = ""
 
-				let response = fakeRequest('/api/v1/events/', data)
-					if(response) {
-						const receivedResponseData = {
-							'event' : 'someRandomToken',
-							'pass' : 'someRandomPasswordToken'
-						}
-						responseData = receivedResponseData
-						event_code = receivedResponseData.event
-					}
-					else {
+				await axios
+					.post('/api/v1/events/', 
+						data)
+					.then((response: ResponseObjectType) => {
+						responseData = response.data
+						event_code = response.data.event
+					})
+					.catch((error: ResponseErrorObjectType) => {
 						encounteredError = true
 						$toasts.ErrorToast("Something went wrong", "we weren't able to register your event.")
-					}
+					})
 				
 				if (!encounteredError){
 
@@ -769,25 +760,29 @@
 					for(let index=0; index < ticket_classes.value.length; index++){
 						let payload = ticket_classes.value[index].data
 						payload.event = event_code
-						let response = fakeRequest(`/api/v1/ticket-classes/`, payload)
-							if (response) {
-							}
-							else{
+						await axios
+							.post(`/api/v1/ticket-classes/`, 
+								payload)
+							.then((response: ResponseObjectType) => {
+							})
+							.catch((error: ResponseErrorObjectType) => {
 								encounteredError = true
 								$toasts.ErrorToast("Something went wrong", 'There seems to be some error in one of your ticket classes.')
-							}
+							})
 					}
 					///////////////// SUBMIT THE REQUESTED INFO
 					for(let index=0; index < requested_info.value.length; index++){
 						let payload = requested_info.value[index].data
 						payload.event = event_code
-						let response = fakeRequest(`/api/v1/requested-info/`, payload)
-						if(response) {
-						}
-						else {
+						await axios
+						.post(`/api/v1/requested-info/`, 
+							payload)
+						.then((response: ResponseObjectType) => {
+						})
+						.catch((error: ResponseErrorObjectType) => {
 							encounteredError = true
 							$toasts.ErrorToast("Something went wrong", 'There seems to be some error in one of your extra information requests.')
-						}
+						})
 					}
 
 				}
@@ -840,11 +835,9 @@
 			}
 
 			const copyToModalTemp = ()=>{
-				// this makes a deep copy of tango from the tracker to the temporary space
 				modal.temp = JSON.parse(JSON.stringify(modal.tracker))
 			}
 			const resetModalTemp = ()=>{
-				// resets the temporary space back to an empty guest class
 				if (modal.type == "requested_info"){
 					modal.temp =  {
 						id: '',
@@ -870,15 +863,6 @@
 				}
 			}
 			const openModal = (data: any, type: string) => {
-				// opens the modal used for displaying the guest classes
-				
-				/* 
-
-				it works by setting the visibility to true 
-				then it makes a shallow copy of tango into the tracker
-				and finallly makes use of the previous method to make a shallow copy into the temporary space
-
-				*/
 
 				modal.type = type
 				modal.visible = true
@@ -888,21 +872,6 @@
 			}
 
 			const closeModal = ()=>{
-				// closes the modal
-
-				/* 
-				
-				works in recursively
-				if editing hasnt been explicitely closed;
-					* it closes it
-					* it also sets the flag for tracking if tango is a new entry to false
-
-				else;
-					* it resets the temporary space
-					* and then resets the tracker
-					* it then closes the modal
-				
-				*/
 
 				if (modal.editing){
 					modal.new = false
@@ -918,13 +887,10 @@
 				modal.type = ""
 			}
 			const editModalData = ()=>{
-				// sets the editing flag on
 				modal.editing = true;
 			}
 			const deleteModalData = () =>{
-				// deletes tango from the array using a filter 
-				// it checks through the array, adding all elements except where the element is  tango
-				// it then closes the modal 
+
 				if (modal.type == "requested_info"){
 					requested_info.value = requested_info.value.filter((requested_info: requestedInformationType) => requested_info !== modal.tracker)
 				}
@@ -936,31 +902,17 @@
 			}
 			
 			const saveModalData = async()=>{
-				// saves tango
-				/* 
-				
-				if tango is a new entry;
-					* it appends it to the list of guest clases
-					* then sets the tracker to tango (as in the last entry of the guest classes list)
-					* then calls the discard methods that takes us back to a read mode tango
 
-				else;
-					* set the title and amount on the tracker to what is contained in the temporary space (as that is the new edit)
-					* this affects tango as the tracker is essentially a pointer to the same storage space as the original tango
-					* then it calls discard method 
-				
-				*/
-				// document.querySelector(`#submit-modal-${this.modal.type}`).click()
 				modal.state = CONSTANTS.busy
-
-				// let valid = this.validateModal()
 
 				let url="ticket-classes"
 				if (modal.type == "requested_info"){
 					url = "requested-info"
 				}
-				let response = fakeRequest(`/api/v1/${url}/verify/`, modal.temp.data)
-					if(response) {
+				await axios
+					.post(`/api/v1/${url}/verify/`, 
+						modal.temp.data)
+					.then((response: ResponseObjectType) => {
 						if (modal.new){
 							modal.new = false
 							if (modal.type == "requested_info"){
@@ -976,26 +928,13 @@
 							modal.tracker.data = modal.temp.data
 						}
 						discardModalData()
-					}
-					else {
+					})
+					.catch((error: ResponseErrorObjectType) => {
 						$toasts.ErrorToast("Something doesn't seem right")
-					}
+					})
 			}
 			const discardModalData = ()=>{
-				/*
-				
-				if tango is a new entry;
-					then it means changes are discarded and a new entry shouldnt be added
-					in this case, the function just closes the modal all together
 
-				else;
-					* it runs the copy to temp function to reset the temp storage back to the whats held in the tracker
-						this means any unsaved changes made to tango would be discarded as the tracker would still contain the exact values it got from tango initially
-						if changes were already saved then the temp space would reflect the new values
-					* then it sets the editing flag to false.
-						that makes the modal go back to the read only mode
-
-				*/
 
 				if (modal.new){
 					closeModal()
@@ -1009,17 +948,6 @@
 				// use confirmation
 			}
 			const addModalData = (type: modalType) =>{
-				// used to add a new tango
-
-				/* 
-				
-				* it initializes a new tango with empty values
-					and an id that equals the length of the guest classes list
-				* then it opens a modal with this new empty tango 
-				* then it sets the new flag to true to keep track that we're making a new entry
-				* then it opens the modal in editing mode
-				
-				*/
 				let payload = {}
 
 				if (type == "requested_info"){

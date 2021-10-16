@@ -9,7 +9,7 @@
 			</div>
 
 
-			<info class="info-fluid" v-if="counts.event>0">
+			<info class="info-fluid" v-if="counts.events>0">
 				<p><mark>{{counts.events}}K</mark> events registered </p>
 				<p><mark>{{counts.tickets}}K</mark> tickets registered</p>
 			</info>
@@ -50,6 +50,8 @@
 	}
 
 
+	import axios from 'axios'
+	import { ResponseObjectType, ResponseErrorObjectType } from '@/consumables/typings'
 	import { defineComponent, reactive } from 'vue';
 
 	export default defineComponent({
@@ -62,8 +64,11 @@
 
 		
 			const fetchSiteStatistics = async() => {
-				counts.events = 20
-				counts.tickets = 423
+				await axios
+					.get(`api/v1/statistics`)
+					.then((response: ResponseObjectType) => {
+						Object.assign(counts, response.data)
+					})
 			}
 
 			// created hook equivalent
