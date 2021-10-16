@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     # third party
     'rest_framework',
     'corsheaders',
+
+    # local
+    'events',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +144,15 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     'http://127.0.0.1:8080',
 ]
+
+SUPPORTED_INPUT_TYPES={
+    ("text", "text"),
+    ("number", "number"),
+    ("email", "email"),
+    ( "tel", "phone number"),
+    ("date", "date"),
+    ("time", "time"),
+    ("datetime-local", "date and time"),
+    ("password", "password"),
+    ( "url", "website link"),
+}
