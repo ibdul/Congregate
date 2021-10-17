@@ -21,8 +21,8 @@
 					Host an event
 				</card>
 
-				<!-- @click="$router.push({name: 'join'})"  -->
 				<card
+				@click="$router.push({name: 'join'})" 
 					>
 					Join an event
 				</card>

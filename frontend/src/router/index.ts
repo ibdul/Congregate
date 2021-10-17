@@ -22,11 +22,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'host',
     component: () => import('../views/events/Host.vue')
   },
-  // {
-  //   path: '/join',
-  //   name: 'join',
-  //   component: () => import('../views/events/Join.vue')
-  // },
+  {
+    path: '/join',
+    name: 'join',
+    component: () => import('../views/events/Join.vue')
+  },
   // {
   //   path: '/manage',
   //   name: 'manage',

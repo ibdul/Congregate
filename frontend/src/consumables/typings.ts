@@ -39,3 +39,8 @@ export interface ticketClassType {
     }
 }
 
+export interface requestedInformationAnswerType{
+    requested_info?:number,
+    answer  :  any
+}
+
