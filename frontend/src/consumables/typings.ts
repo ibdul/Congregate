@@ -15,6 +15,17 @@ export interface ResponseErrorObjectType{
     request:any
 }
 
+export interface reponseRequestedInformationType{
+    id?: number,
+    title: string,
+    kind: string,
+    required: boolean,
+    maxlength: number,
+    short_description: string,
+    description: string,
+    data?: any,
+}
+
 export interface requestedInformationType{
     id?: number,
     data :  {
@@ -27,6 +38,13 @@ export interface requestedInformationType{
         description: string,
         data: any,
     }
+}
+
+export interface responseTicketClassType {
+    id?: number,
+    title: string,
+    description: string,
+    cost: number
 }
 
 export interface ticketClassType {

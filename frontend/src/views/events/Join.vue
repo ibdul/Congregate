@@ -289,7 +289,7 @@
                         <p>You ticket was successfully registered. Keep the code below safe as you might need it to prove your registration for the event.</p>
                         <section>
                             <h4>Ticket code</h4>
-                            <p>{{modal.temp.ticket}}</p>
+                            <p>{{modal.temp.data.ticket}}</p>
                         </section>
                     </section>
                 </template>
@@ -306,13 +306,18 @@
 </template>
 
 <script lang="ts">
+	import axios from 'axios'
 
 	import CONSTANTS from '@/consumables/constants'
 	import { useToasts } from '@/consumables/plugins'
     import { 
 		requestedInformationType,
 		requestedInformationAnswerType,
+		responseTicketClassType,
 		ticketClassType,
+		reponseRequestedInformationType,
+		ResponseObjectType,
+		ResponseErrorObjectType
 		} from '@/consumables/typings'
 
 	import { defineComponent, reactive, ref } from 'vue'
@@ -335,57 +340,6 @@
         props: {},
         setup (props: any) {
 			const $toasts: any = useToasts()
-			const fakeEvent = {
-				id: 234,
-				event: 234,
-				title: "Moon meet",
-				kind: "Raving",
-				start_date: "12-08-2019",
-				description: "Let's Rave on the actual Moon",
-				venue: "The Moon",
-				ticket_classes: [
-					{
-						id: 12,
-						title: "Space monkey",
-						description: "Get your suits and supplies at the meet",
-						cost: 123
-					},
-					{
-						id: 13,
-						title: "Space Shark",
-						description: "You bring all your supplies",
-						cost: 23
-					},
-					{
-						id: 15,
-						title: "Space Worm",
-						description: "Your stay with a friend of a higher ticket class",
-						cost: 5
-					},
-				],
-				requested_information:[
-					{
-						id: 12,
-						title: 'name',
-						kind: 'text',
-						required: true,
-						maxlength: 123,
-						short_description: 'Please tell us your name',
-						description: 'this would be necessary to allot seats',
-						data: {},
-					},
-					{
-						id: 5,
-						title: 'phone',
-						kind: 'tel',
-						required: false,
-						maxlength: 20,
-						short_description: 'Provide a phone number',
-						description: 'this would be useful in case we need to make calls to you back on earth',
-						data: {},
-					}
-				]
-			}
 			const CONSTANTSX = CONSTANTS
             let step = ref<number>(1)
             let paymentRequired = ref<boolean>(false)
@@ -431,17 +385,7 @@
             })
             
 			// METHODS
-
-		const fakeRequest = (fakeAddress: string, data:any) => {
-			let milliseconds = 500
-			const date = Date.now()
-			let currentDate = null
-			do {
-				currentDate = Date.now()
-			}
-			while (currentDate - date < milliseconds)
-			return true
-		}
+			
 		const resetData = ()=> {
 			const initial = {
 				event:<_event>"",
@@ -485,13 +429,15 @@
 						answerQuestions()
 						for(let index=0; index < requested_info_answers.value.length; index++){
 							let payload = requested_info_answers.value[index]
-							let fakeResponse = fakeRequest(`/api/v1/requested-info-answers/verify/`, payload)
-								if(fakeResponse){
-								}
-								else{
+							await axios
+								.post(`/api/v1/requested-info-answers/verify/`, 
+									payload)
+								.then( (response: ResponseObjectType) => {
+								})
+								.catch( (error: ResponseErrorObjectType) => {
 									encounteredError = true
 									$toasts.ErrorToast("Data invalid")
-								}
+								})
 						}
 					}
 					if (!encounteredError){
@@ -513,13 +459,19 @@
 						summerize()
 					}
 					else if (step.value==1){
-					let fakeResponse = fakeRequest(`api/v1/events/${payload.event}`, {})
-						if (fakeResponse){
-							openModal(fakeEvent, 'event')
-						}
-						else{
+						await axios
+						.get(`api/v1/events/${payload.event}`)
+						.then(response => {
+							openModal(response.data, 'event')
+						})
+						.catch(error => {
+							if (error.response.status==404){
+								$toasts.ErrorToast("Event not found", "danger")
+							}
+							else{
 								$toasts.ErrorToast("Something went wrong")
-						}
+							}
+						})
 						buttons.footer.primary.text = "next"
 						buttons.footer.primary.disabled = false
 					}
@@ -533,7 +485,7 @@
 			let date = new Date(raw)
 			return String(date)
         }
-        const addTicketClass = (x: any)=>{
+        const addTicketClass = (x: responseTicketClassType)=>{
 			let ticketClass = <ticketClassType>{} 
 			ticketClass.id = data.ticket_classes.length+1
 			ticketClass.data = {
@@ -544,7 +496,7 @@
 			}
 			data.ticket_classes.push(ticketClass)
         }
-        const addRequestedInfo = (x: any) => {
+        const addRequestedInfo = (x: reponseRequestedInformationType) => {
 			let extraInfo = <requestedInformationType>{}
 			extraInfo.id = data.requested_info.length+1
 			extraInfo.data = {
@@ -566,32 +518,33 @@
 			let ticketDetails= {}
 			let encounteredError = false
 
-			let fakeResponse = fakeRequest('/api/v1/tickets/', payload)
-				if(fakeResponse){
-					const fakeResponseObj = {
-						ticket: "someRandomTicketToken"
-					}
-					ticketDetails = fakeResponseObj
-					ticket = fakeResponseObj.ticket
-				}
-				else{
+			await axios
+				.post('/api/v1/tickets/', 
+					payload)
+				.then((response: ResponseObjectType) => {
+					ticketDetails = response
+					ticket = response.data.ticket
+				})
+				.catch((error: ResponseErrorObjectType) => {
 					$toasts.ErrorToast("Something went wrong", "we weren't able to register your ticket.")
 					encounteredError = true
-				}
+				})
 			
 			if (!encounteredError){
 				///////////////// submit the requested information answers
 				for(let index=0; index < requested_info_answers.value.length; index++){
 					let payload:any  = requested_info_answers.value[index]
 					payload.ticket = ticket
-					let fakeResponse = fakeRequest(`/api/v1/requested-info-answers/`, payload)
-						if(fakeResponse){
+					await axios
+						.post(`/api/v1/requested-info-answers/`, 
+							payload)
+						.then( response => {
 
-						}
-						else{
+						})
+						.catch( error => {
 							encounteredError = true
 							$toasts.ErrorToast("Something doesn't seem right with your answers to the requested questions")
-						}
+						})
 				}
 			}
 			if (!encounteredError){
@@ -654,25 +607,25 @@
 				resetPayload()
 				
 				payload.event = event
-					let fakeResponse = fakeRequest(`api/v1/events/${payload.event}/fetch/`, {})
-					if(fakeResponse){
+				await axios
+					.get(`api/v1/events/${payload.event}/fetch/`)
+					.then((response: ResponseObjectType) => {
 
+						data.event  = response.data.event
 
-						data.event  = fakeEvent.event
-
-						let raw_ticket_classes:  any[] = fakeEvent.ticket_classes
+						let raw_ticket_classes:  responseTicketClassType[] = response.data.ticket_classes
 						raw_ticket_classes.map(x => {
 							addTicketClass(x)
 						})
-						let raw_requested_info:  any[] = fakeEvent.requested_information
+						let raw_requested_info:  reponseRequestedInformationType[] = response.data.requested_information
 						raw_requested_info.map(x => {
 							addRequestedInfo(x)
 						})
 						step.value += 1
-					}
-					else{
+					})
+					.catch((error: ResponseErrorObjectType) => {
 						$toasts.ErrorToast("Something went wrong")
-					}
+					})
 			}
 			else{
 				payload.ticket_class= modal.temp.data.id
