@@ -10,8 +10,8 @@
 
 
 			<info class="info-fluid" v-if="counts.events>0">
-				<p><mark>{{counts.events}}K</mark> events registered </p>
-				<p><mark>{{counts.tickets}}K</mark> tickets registered</p>
+				<p><mark>{{counts.events}}</mark> event<template v-if="counts.events>1">s</template> registered </p>
+				<p><mark>{{counts.tickets}}</mark> ticket<template v-if="counts.tickets>1">s</template> registered</p>
 			</info>
 
 			<card-deck class="card_deck card_deck-fluid">

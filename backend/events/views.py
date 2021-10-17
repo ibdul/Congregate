@@ -207,7 +207,6 @@ class SupportedDataTypes(APIView):
 class Statistics(APIView):
     def get(self, request, format=None):
         events = Event.objects.all().count()
-        tickets = 123
-        # tickets = Ticket.objects.all().count()
+        tickets = Ticket.objects.all().count()
         return Response({'tickets':tickets, "events": events})
 
