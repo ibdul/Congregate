@@ -16,8 +16,8 @@ def passCodeGen(length=6):
 def eventCodeGen(length=8):
     return randomCodeGen(length)
 
-# def ticketCodeGen(length=9):
-#     return randomCodeGen(length)
+def ticketCodeGen(length=9):
+    return randomCodeGen(length)
 
     
 
@@ -88,3 +88,32 @@ class RequestedInformation(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class RequestedInformationAnswer(models.Model):
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, related_name="requested_information_answers",  blank=True, null=True)
+    requested_information = models.ForeignKey(RequestedInformation, on_delete=models.CASCADE, related_name="answers")
+    answer = models.CharField(max_length = 150)
+
+    class Meta:
+        verbose_name = 'Extra info answer'
+        verbose_name_plural = 'Extra info answers'
+
+    def __str__(self):
+        return f"{self.RequestedInformation.title} - {self.answer}"
+
+class Ticket(models.Model):
+    code = models.CharField(primary_key=True, max_length = 50, default=ticketCodeGen, editable=False, unique=True)
+
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="tickets")
+    ticket_class = models.ForeignKey('TicketClass', on_delete=models.CASCADE, related_name="tickets")
+
+    email = models.EmailField()
+
+
+    class Meta:
+        verbose_name = 'Ticket'
+        verbose_name_plural = 'Tickets'
+
+    def __str__(self):
+        return f"ticket - {self.code}"
