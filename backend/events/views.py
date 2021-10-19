@@ -1,7 +1,9 @@
+import csv
 import datetime
 from urllib.parse import urlsplit
 
 from django.core import validators as DjangoValidators
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.dateparse import parse_datetime
 from django.utils import formats as formatsFunc
@@ -24,6 +26,15 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = [AllowAny]
 
+    
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            event = serializer.save()
+            return Response({'success':"data valid", "event": event.code, 'pass': event.pass_code})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def retrieve(self, request, pk=None):
         event = get_object_or_404(self.queryset, code=pk)
         serializer = EventSerializer(event)
@@ -42,15 +53,53 @@ class EventViewSet(viewsets.ModelViewSet):
             "ticket_classes": ticket_classes.data
             })
 
+    @action(detail=False, methods=['get', 'post'])
+    def manage(self, request):
+        event = get_object_or_404(self.queryset, code=request.data['event'], pass_code=request.data['pass'])
+        serializer = EventSerializer(event)
+        ticket_classes = TicketClassSerializer(TicketClass.objects.filter(event=event), many=True)
+        requested_information = RequestedInformationSerializer(RequestedInformation.objects.filter(event=event), many=True)
 
+        tickets = FullTicketSerializer(Ticket.objects.filter(event=event), many=True)
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            event = serializer.save()
-            return Response({'success':"data valid", "event": event.code, 'pass': event.pass_code})
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            "event": serializer.data,
+            "requested_information" : requested_information.data,
+            "ticket_classes": ticket_classes.data,
+            "tickets": tickets.data,
+            })
+
+    @action(detail=False, methods=['post'])
+    def downloadCSV(self, request):
+        event = get_object_or_404(self.queryset, code=request.data['event'], pass_code=request.data['pass'])
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f"attachment; filename=event-{request.data['event']}.csv"
+
+        extraInfos = RequestedInformation.objects.filter(event=event)
+        questions = [extraInfo for extraInfo in extraInfos]
+        header = ['Email', 'Ticket Class', 'Code']
+        file = []
+        for ticket in Ticket.objects.filter(event=event):
+            answers = [answer for answer in ticket.requested_information_answers.all()]
+            payload = ["-"]*len(questions)
+            for index, answer in enumerate(answers):
+                if answer.requested_information in questions:
+                    payload[questions.index(answer.requested_information)] = answer.answer
+            payload.insert(0, str(ticket.code))
+            payload.insert(0, ticket.ticket_class.title)
+            payload.insert(0, ticket.email)
+            file.append(payload)
+        
+        for question in questions:
+            header.append(question)
+        file.insert(0, header)
+        file.append("\n")
+        file.append([f"generated on {datetime.datetime.now()}"])
+
+        writer = csv.writer(response)
+        writer.writerows(file)
+        
+        return response
 
 class RequestedInformationViewSet(viewsets.ModelViewSet):
     queryset = RequestedInformation.objects.all()
