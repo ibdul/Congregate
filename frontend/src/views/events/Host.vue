@@ -18,7 +18,7 @@
 		<template v-if="step==1">
 			<main class="main L1">
 				<div class="main_header">
-					<p class="main__suptile">Host an event</p>
+					<p class="main__suptitle">Host an event</p>
 					<h1 class="main__title">{{step}}. Basic Details</h1>
 				</div>
 				<form  id='form-1' class="L2" @submit.prevent="validate">
@@ -71,7 +71,7 @@
 		<template v-if="step==2">
 			<main class="main L1">
 				<div class="main_header">
-					<p class="main__suptile">Host an event</p>
+					<p class="main__suptitle">Host an event</p>
 					<h1 class="main__title">{{step}}. Secondary Details</h1>
 				</div>
 
@@ -128,7 +128,7 @@
 		<template id='3' v-if="step==3">
 			<main class="main L1">
 				<div class="main_header">
-					<p class="main__suptile">Host an event</p>
+					<p class="main__suptitle">Host an event</p>
 					<h1 class="main__title">{{step}}. Guest Setup</h1>
 				</div>
 			<!--  -->

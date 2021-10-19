@@ -27,11 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'join',
     component: () => import('../views/events/Join.vue')
   },
-  // {
-  //   path: '/manage',
-  //   name: 'manage',
-  //   component: () => import('../views/events/Manage.vue')
-  // }
+  {
+    path: '/manage',
+    name: 'manage',
+    component: () => import('../views/events/Manage.vue')
+  }
 
 ]
 

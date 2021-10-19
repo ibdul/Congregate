@@ -28,8 +28,8 @@
 				</card>
 			</card-deck>
 
-				<!-- @click="$router.push({name: 'manage'})" -->
 			<card class="card card-fluid"
+				@click="$router.push({name: 'manage'})"
 				>
 				Manage an event
 			</card>
