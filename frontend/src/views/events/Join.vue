@@ -1,307 +1,450 @@
 <template>
+<div>
 <div class="container">
-
-    <header class="header">
-            <btn class="btn-primary-clear"
+	<fadeFx>
+		<header class="header">
+			<btn class="btn-primary-clear"
 				@click="$router.push({name: 'home'})"
 				>
-                    Home
-            </btn>
-        </header>
+					Home
+			</btn>
+		</header>
+	</fadeFx>
 
 
 		<stack size="lg">
-		<dots
-			:step='step'
-			:total='totalSteps'
-		/>
-        <template v-if="step==1">
-				<stack size="z">
-					<p class="page_suptitle">Join an event</p>
-					<h1 class="page_title">{{step}}. Find event</h1>
-					<p class="page_subtitle">Enter a valid event code to proceed.</p>
-				</stack>
-				<stack>
-				<form @submit.prevent="validate" class="stack_pass">
-					<field-set
-						field="event code" 
-						placeholder="What is the code to the event you want to join"
-						v-model="payload.event"
-						:required="true"
-					/>
-					<input type="submit" hidden=true id="submit-form">
-				</form>
-				</stack>
-		</template>
-
-        <template v-if="step==2">
-				<stack size="z">
-					<p class="page_suptitle">Join an event</p>
-					<h1 class="page_title">{{step}}. Class selection</h1>
-					<p class="page_subtitle"> Click on a card to get it's details.</p>
-				</stack>
-				<stack>
-					<card-deck class="card_deck">
-						<card v-for="card in data.ticket_classes" :key="card.id"
-							:class="payload.ticket_class == card.data.id ? 'card-active' : '' "
-							@click="openModal(card,'class')"
+			<fadeFx
+					:to="routeDirectionY"
+					:delay="2"
+					:totalElements="2"
+					>
+				<dots
+					:step='step'
+					:total='totalSteps'
+				/>
+			</fadeFx>
+			<template v-if="step==1">
+				<fadeFx
+					:to="routeDirectionY"
+					:totalElements="2"
+					>
+					<stack size="z">
+						<p class="page_suptitle">Join an event</p>
+						<h1 class="page_title">{{step}}. Find event</h1>
+						<p class="page_subtitle">Enter a valid event code to proceed.</p>
+					</stack>
+					</fadeFx>
+					<stack>
+					<form @submit.prevent="validate" class="stack_pass">
+						<fadeFx
+							:to="routeDirectionY"
+							:delay="2"
+							:totalElements="2"
 							>
-							{{card.data.title}}
-						</card>
-					</card-deck>
-				</stack>
-		</template>
+							<field-set
+								field="event code" 
+								placeholder="What is the code to the event you want to join"
+								v-model="payload.event"
+								:required="true"
+							/>
+						</fadeFx>
+						<input type="submit" hidden=true id="submit-form">
+					</form>
+					</stack>
+			</template>
 
-        <template v-if="step==3">
-				<stack size="z">
-					<p class="page_suptitle">Join an event</p>
-					<h1 class="page_title">{{step}}. Requested Information</h1>
-					<p class="page_subtitle">Fill in the information below as requested by the event organizers.</p>
-				</stack>
+			<template v-else-if="step==2">
+				<fadeFx
+					:to="routeDirectionY"
+					>
+					<stack size="z">
+						<p class="page_suptitle">Join an event</p>
+						<h1 class="page_title">{{step}}. Class selection</h1>
+						<p class="page_subtitle"> Click on a card to get it's details.</p>
+					</stack>
+					</fadeFx>
+					<stack>
+						<card-deck>
+						<!-- <template 
+							> -->
+						<fadeFx
+							v-for="card in data.ticket_classes"
+							:key="card.id"
+							:to="routeDirectionY"
+							:delay="2+card.id"
+							:totalElements="2+data.ticket_classes.length"
+							>
+							<card 
+								:class="payload.ticket_class == card.data.id ? 'card-active' : '' "
+								@click="openModal(card,'class')"
+								>
+								{{card.data.title}}
+							</card>
+						</fadeFx>
+						<!-- </template> -->
+						</card-deck>
+					</stack>
+			</template>
+
+			<template v-else-if="step==3">
+				<fadeFx
+					:to="routeDirectionY"
+					:totalElements="2"
+					>
+					<stack size="z">
+						<p class="page_suptitle">Join an event</p>
+						<h1 class="page_title">{{step}}. Requested Information</h1>
+						<p class="page_subtitle">Fill in the information below as requested by the event organizers.</p>
+					</stack>
+				</fadeFx>
+
 				<stack>
-				<form class="stack_pass" @submit.prevent="validate">
-					<field-set
-						v-for="field in data.requested_info"
-						:key="field.id"
-						:field="field.data.title" 
-						:type="field.data.kind"
-						:maxlength="field.data.maxlength"
-						:placeholder="field.data.short_description"
-						:help_text="field.data.description"
-						:required="field.data.required"
-
-						v-model="field.data.data"
-					/>
-					<h4 v-if="data.requested_info.length==0">No requested data. Please click next to proceed</h4>
-
-					<input type="submit" hidden=true id="submit-form">
-				</form>
-				</stack>
-		</template>
-		
-		<template v-if="step==4">
-				<stack size="z">
-					<p class="page_suptitle">Join an event</p>
-					<h1 class="page_title">{{step}}. Payment Information</h1>
-					<template v-if="paymentRequired">
-						<p class="page_subtitle">Your Selection requires you to pay a fee.</p>
-						<p class="page_subtitle">Fill the information below to proceed.</p>
-					</template>
-					<template v-else>
-						<p class="page_subtitle">Your Selection doesn't require any fee.</p>
-						<p class="page_subtitle">Fill the information below and then proceed.</p>
-					</template>
-				</stack>
-
-				<stack>
-					<template v-if="paymentRequired">
-						<h3>
-							payment funtionality coming soon!
-						</h3>
-					</template>
-
 					<form class="stack_pass" @submit.prevent="validate">
-						<field-set
-							field="email" 
-							placeholder="Enter  your email"
-							type="email"
-							:required="true"
-							v-model="payload.email"
-						/>
+						<fadeFx
+							v-for="field in data.requested_information"
+							:key="field.id"
+							:to="routeDirectionY"
+							:delay="2"
+							:totalElements="2"
+							>
+							<field-set
+								:field="field.data.title" 
+								:type="field.data.kind"
+								:maxlength="field.data.maxlength"
+								:placeholder="field.data.short_description"
+								:help_text="field.data.description"
+								:required="field.data.required"
+
+								v-model="field.data.data"
+							/>
+						</fadeFx>
+						
+					<fadeFx
+						:to="routeDirectionY"
+						:delay="2"
+						:totalElements="2"
+						>
+						<h4 v-if="data.requested_information.length==0">No requested data. Please click next to proceed</h4>
+					</fadeFx>
 						<input type="submit" hidden=true id="submit-form">
 					</form>
 				</stack>
-		</template>
+			</template>
+			
+			<template v-else-if="step==4">
+				<fadeFx
+					:to="routeDirectionY"
+					:totalElements="3"
+					>
+					<stack size="z">
+						<p class="page_suptitle">Join an event</p>
+						<h1 class="page_title">{{step}}. Payment Information</h1>
+						<template v-if="paymentRequired">
+							<p class="page_subtitle">Your Selection requires you to pay a fee.</p>
+							<p class="page_subtitle">Fill the information below to proceed.</p>
+						</template>
+						<template v-else>
+							<p class="page_subtitle">Your Selection doesn't require any fee.</p>
+							<p class="page_subtitle">Fill the information below and then proceed.</p>
+						</template>
+					</stack>
+				</fadeFx>
+
+					<stack>
+						<template v-if="paymentRequired">
+							<fadeFx
+								:to="routeDirectionY"
+								:delay="2"
+								:totalElements="3"
+								>
+								<h3>
+									payment funtionality coming soon!
+								</h3>
+							</fadeFx>
+						</template>
+
+						<form class="stack_pass" @submit.prevent="validate">
+							<fadeFx
+								:to="routeDirectionY"
+								:delay="3"
+								:totalElements="3"
+								>
+								<field-set
+									field="email" 
+									placeholder="Enter  your email"
+									type="email"
+									:required="true"
+									v-model="payload.email"
+								/>
+							</fadeFx>
+							<input type="submit" hidden=true id="submit-form">
+						</form>
+					</stack>
+			</template>
 		</stack>
 
-		<footer class="footer">
-			<btn
-				class="btn-primary-clear"
-				@click="validate(true)"
-				v-if="(buttons.footer.primary.visible && step !== totalSteps)"
-				:disabled="buttons.footer.primary.disabled"
-				:class="buttons.footer.primary.status==CONSTANTSX.busy ? 'btn-loading' : '' "
-				>
-                    {{buttons.footer.primary.status || buttons.footer.primary.text}}
-            </btn>
-            <btn
-				class="btn-primary-clear"
-				@click="validate(true)"
-				v-if="step == totalSteps"
-				:disabled="buttons.footer.tertiary.disabled"
-				:class="buttons.footer.tertiary.status==CONSTANTSX.busy ? 'btn-loading' : '' "
-				>
-                    {{buttons.footer.tertiary.text}}
-            </btn>
-            <btn
-				class="btn-primary-clear"
-				@click="previous"
-				v-if="buttons.footer.secondary.visible && step !== 1"
-				:disabled="buttons.footer.secondary.disabled"
-				>
-                    {{buttons.footer.secondary.text}}
-            </btn>
-        </footer>
+		<fadeFx
+			:to="routeDirectionY"
+			>
+			<footer class="footer">
+				<btn
+					class="btn-primary-clear"
+					@click="validate(true)"
+					v-if="(buttons.footer.primary.visible && step !== totalSteps)"
+					:disabled="buttons.footer.primary.disabled"
+					:class="buttons.footer.primary.status==CONSTANTSX.busy ? 'btn-loading' : '' "
+					>
+						{{buttons.footer.primary.status || buttons.footer.primary.text}}
+				</btn>
+				<btn
+					class="btn-primary-clear"
+					@click="validate(true)"
+					v-if="step == totalSteps"
+					:disabled="buttons.footer.tertiary.disabled"
+					:class="buttons.footer.tertiary.status==CONSTANTSX.busy ? 'btn-loading' : '' "
+					>
+						{{buttons.footer.tertiary.text}}
+				</btn>
+				<btn
+					class="btn-primary-clear"
+					@click="previous"
+					v-if="buttons.footer.secondary.visible && step !== 1"
+					:disabled="buttons.footer.secondary.disabled"
+					>
+						{{buttons.footer.secondary.text}}
+				</btn>
+			</footer>
+		</fadeFx>
 
-        <modal
-            v-if="modal.visible && modal.type=='event' "
-            @close="closeModal()"
-            >
-                <template #modal__title>
-                        <h2>Find an event</h2>
-                </template>
-                <template #default>
-                    <stack>
-                        <stack  size="xsm">
-                            <h5>Title</h5>
-                            <p>{{modal.temp.title}}</p>
-                        </stack>
-                        <stack  size="xsm">
-                            <h5>Type of event</h5>
-                            <p>{{modal.temp.kind}}</p>
-                        </stack>
-                        <stack  size="xsm">
-                            <h5>Date Of Event</h5>
-                            <p>{{parseDate(modal.temp.start_date)}}</p>
-                        </stack>
-                        <stack  size="xsm">
-                            <h5>Venue</h5>
-                            <p>{{modal.temp.venue}}</p>
-                        </stack>
-                        <stack  size="xsm">
-                            <h5>Description</h5>
-                            <p>{{modal.temp.description}}</p>
-                        </stack>
-                    </stack>
-                </template>
-                <template #modal__footer>
-                    <btn class="" @click="closeModal">close</btn>
-                    <btn
-                        :class="modal.state !== '' ? 'btn-loading' : '' "
-                        :disabled="modal.state !== ''"
-                        @click="selectModalData"
-                        >
-                        {{ modal.state !== '' ? modal.state : 'select'}}
-                    </btn>
-                </template>
-        </modal>
-        <modal
-            v-else-if="modal.visible && modal.type=='class' "
-            @close="closeModal()"
-            >
-                <template #modal__title>
-                        <h2>Select a ticket class</h2>
-                </template>
-                <template #default>
-                    <stack
-						size="xsm"
-                        v-for="(val, item, id) in modal.temp.data"
-                        :key="id"
-                        >
-                        <stack v-if="item !== 'id'">
-                            <h5>{{item}}</h5>
-                            <p>{{val}}</p>
-                        </stack>
-                    </stack>
-                </template>
-                <template #modal__footer>
-                        <btn class="" @click="closeModal">close</btn>
-                        <btn
-                        :class="modal.state !== '' ? 'btn-loading' : '' "
-                        :disabled="modal.state !== '' "
-                        @click="selectModalData"
-                        >
-                            {{ modal.state !== '' ? modal.state : 'select'}}
-                        </btn>
-                </template>
-        </modal>
-        <modal
-            v-else-if="modal.visible && modal.type=='summary' "
-            @close="closeModal()"
-            >
-                <template #modal__title>
-                        <h2>Summary of your ticket data</h2>
-                </template>
-                <template #default>
+</div>
+	<transition name="modal">
+		<modal
+			v-if="modal.visible && modal.type=='event' "
+			@close="closeModal()"
+			>
+				<template #modal__title>
+					<fadeFx  :totalElements="6">
+						<h2>Find an event</h2>
+					</fadeFx>
+				</template>
+				<template #default>
 					<stack>
-                    <stack size="sm">
-                        <h3 class="section__title">Basic ticket information</h3>
-                        <stack size="xsm">
-                            <h5>Event Title</h5>
-                            <p>{{data.event.title}}</p>
-                        </stack>
-                        <stack size="xsm">
-                            <h5>TIcket Class</h5>
-                            <p>{{data.ticket_class.title}}</p>
-                        </stack>
-                        <stack size="xsm">
-                            <h5>Ticket Cost</h5>
-                            <p>{{data.ticket_class.cost}}</p>
-                        </stack>
-                    </stack>
+						<fadeFx
+							to="top"
+							:delay="2"
+							:totalElements="6"
+							>
+							<stack  size="xsm">
+								<h5>Title</h5>
+								<p>{{modal.temp.title}}</p>
+							</stack>
+						</fadeFx>
+						<fadeFx
+							to="top"
+							:delay="3"
+							:totalElements="6"
+							>
+							<stack  size="xsm">
+								<h5>Type of event</h5>
+								<p>{{modal.temp.kind}}</p>
+							</stack>
+						</fadeFx>
+						<fadeFx
+							to="top"
+							:delay="4"
+							:totalElements="6"
+							>
+							<stack  size="xsm">
+								<h5>Date Of Event</h5>
+								<p>{{parseDate(modal.temp.start_date)}}</p>
+							</stack>
+						</fadeFx>
+						<fadeFx
+							to="top"
+							:delay="5"
+							:totalElements="6"
+							>
+							<stack  size="xsm">
+								<h5>Venue</h5>
+								<p>{{modal.temp.venue}}</p>
+							</stack>
+						</fadeFx>
+						<fadeFx
+							to="top"
+							:delay="6"
+							:totalElements="6"
+							>
+							<stack  size="xsm">
+								<h5>Description</h5>
+								<p>{{modal.temp.description}}</p>
+							</stack>
+						</fadeFx>
+					</stack>
+				</template>
+				<template #modal__footer>
+					<btn class="" @click="closeModal">close</btn>
+					<btn
+						:class="modal.state !== '' ? 'btn-loading' : '' "
+						:disabled="modal.state !== ''"
+						@click="selectModalData"
+						>
+						{{ modal.state !== '' ? modal.state : 'select'}}
+					</btn>
+				</template>
+		</modal>
+		<modal
+			v-else-if="modal.visible && modal.type=='class' "
+			@close="closeModal()"
+			>
+				<template #modal__title>
+					<fadeFx  :totalElements="modal.temp.data.length">
+						<h2>Select a ticket class</h2>
+					</fadeFx>
+				</template>
+				<template #default>
+					<stack
+						size="sm"
+						v-for="(val, item, id) in modal.temp.data"
+						:key="id"
+						>
+						<fadeFx
+							to="top"
+							:delay="id+1"
+							:totalElements="modal.temp.data.length"
+							>
+							<stack size="xsm" v-if="item !== 'id'">
+								<h5>{{item}}</h5>
+								<p>{{val}}</p>
+							</stack>
+						</fadeFx>
+					</stack>
+				</template>
+				<template #modal__footer>
+						<btn class="" @click="closeModal">close</btn>
+						<btn
+						:class="modal.state !== '' ? 'btn-loading' : '' "
+						:disabled="modal.state !== '' "
+						@click="selectModalData"
+						>
+							{{ modal.state !== '' ? modal.state : 'select'}}
+						</btn>
+				</template>
+		</modal>
+		<modal
+			v-else-if="modal.visible && modal.type=='summary' "
+			@close="closeModal()"
+			>
+				<template #modal__title>
+					<fadeFx  :totalElements="4">
+						<h2>Summary of your ticket data</h2>
+					</fadeFx>
+				</template>
+				<template #default>
+					<stack>
+						<fadeFx
+							to="top"
+							:delay="2"
+							:totalElements="4"
+							>
+							<stack size="sm">
+								<h3 class="section__title">Basic ticket information</h3>
+								<stack size="xsm">
+									<h5>Event Title</h5>
+									<p>{{data.event.title}}</p>
+								</stack>
+								<stack size="xsm">
+									<h5>TIcket Class</h5>
+									<p>{{data.ticket_class.title}}</p>
+								</stack>
+								<stack size="xsm">
+									<h5>Ticket Cost</h5>
+									<p>{{data.ticket_class.cost}}</p>
+								</stack>
+							</stack>
+						</fadeFx>
 
-                    <stack size="sm">
-                        <h3 class="section__title">Data requested by event organizers</h3>
-                        <stack
-								size="xsm"
-                                v-for="field in data.requested_info"
-                                :key="field.id"
-                                >
-                                <h5>{{field.data.title}}</h5>
-                                <p>{{field.data.data.length!==0? field.data.data : '-'}}</p>
-                        </stack>
-                        <h5 v-if="data.requested_info.length==0">No requested data. Please click next to proceed</h5>
-                    </stack>
-                    
-                    <stack size="sm">
-                        <h3 class="section__title">Required data</h3>
-                        <stack size="xsm">
-                            <h5>Email</h5>
-                            <p>{{payload.email}}</p>
-                        </stack>
-                    </stack>
+					<fadeFx
+						to="top"
+						:delay="3"
+						:totalElements="4"
+						>
+						<stack size="sm">
+							<h3 class="section__title">Data requested by event organizers</h3>
+							<stack
+									size="xsm"
+									v-for="field in data.requested_information"
+									:key="field.id"
+									>
+									<h5>{{field.data.title}}</h5>
+									<p>{{field.data.data.length!==0? field.data.data : '-'}}</p>
+							</stack>
+							<h5 v-if="data.requested_information.length==0">No requested data. Please click next to proceed</h5>
+						</stack>
+					</fadeFx>
+
+					<fadeFx
+						to="top"
+						:delay="4"
+						:totalElements="4"
+						>
+						<stack size="sm">
+							<h3 class="section__title">Required data</h3>
+							<stack size="xsm">
+								<h5>Email</h5>
+								<p>{{payload.email}}</p>
+							</stack>
+						</stack>
+					</fadeFx>
 				</stack>
-                </template>
-                
-                <template #modal__footer>
-                        <btn class="" @click="closeModal">close</btn>
-                        <btn
-                        :class="modal.state !== '' ? 'btn-loading' : '' "
-                        :disabled="modal.state !== '' "
-                        @click="submit"
-                        >
-                            {{ modal.state !== '' ? modal.state : 'confirm'}}
-                        </btn>
-                </template>
-        </modal>
-        <modal
-            v-else-if="modal.visible && modal.type=='ticket-details' "
-            :showClose="false"
-            icon="&#x2713;"
-            >
-                <template #modal__title>
-                    <h2>Success</h2>
-                </template>
-                
-                <template #default>
-                    <stack size="sm">
-                        <h3>Your Ticket Details</h3>
-                        <p>You ticket was successfully registered. Keep the code below safe as you might need it to prove your registration for the event.</p>
-                        <stack size="xsm">
-                            <h5>Ticket code</h5>
-                            <p>{{modal.temp.data.ticket}}</p>
-                        </stack>
-                    </stack>
-                </template>
+				</template>
+				
+				<template #modal__footer>
+						<btn class="" @click="closeModal">close</btn>
+						<btn
+						:class="modal.state !== '' ? 'btn-loading' : '' "
+						:disabled="modal.state !== '' "
+						@click="submit"
+						>
+							{{ modal.state !== '' ? modal.state : 'confirm'}}
+						</btn>
+				</template>
+		</modal>
+		<modal
+			v-else-if="modal.visible && modal.type=='ticket-details' "
+			:showClose="false"
+			icon="&#x2713;"
+			>
+				<template #modal__title>
+					<fadeFx  :totalElements="2">
+						<h2>Success</h2>
+					</fadeFx>
+				</template>
+				
+				<template #default>
+					<fadeFx
+						to="top"
+						:delay="2"
+						:totalElements="2"
+						>
+						<stack size="sm">
+							<h3>Your Ticket Details</h3>
+							<p>You ticket was successfully registered. Keep the code below safe as you might need it to prove your registration for the event.</p>
+							<stack size="xsm">
+								<h5>Ticket code</h5>
+								<p>{{modal.temp.data.ticket}}</p>
+							</stack>
+						</stack>
+					</fadeFx>
+				</template>
 
-                <template #modal__footer>
-                    <section>
-                        <btn class="btn-danger" @click="$router.push({name:'home'})">Back to home</btn>
-                    </section>
-                </template>
+				<template #modal__footer>
+					<section>
+						<btn class="btn-danger" @click="$router.push({name:'home'})">Back to home</btn>
+					</section>
+				</template>
 
-        </modal>
-
+		</modal>
+	</transition>
 </div>
 </template>
 
@@ -317,28 +460,30 @@
 		ticketClassType,
 		reponseRequestedInformationType,
 		ResponseObjectType,
-		ResponseErrorObjectType
+		ResponseErrorObjectType,
+		routeDirectionType,
 		} from '@/consumables/typings'
 
-	import { defineComponent, reactive, ref } from 'vue'
+	import { computed, defineComponent, reactive, ref } from 'vue'
 	type _event = any
 	interface _payload {
 		event: _event,
 		email: string,
 		ticket_class?:ticketClassType | number,
-		requested_info_answers: requestedInformationAnswerType[]
+		requested_information_answers: requestedInformationAnswerType[]
 	}
 	interface _data{
 		event:_event,
 		ticket_classes: ticketClassType[],
 		ticket_class?: ticketClassType,
-		requested_info: requestedInformationType[]
+		requested_information: requestedInformationType[]
 	}
 
     export default defineComponent({
 		name:"Join",
         props: {},
         setup (props: any) {
+			let routeDirection = ref<routeDirectionType>('forward')
 			const $toasts: any = useToasts()
 			const CONSTANTSX = CONSTANTS
             let step = ref<number>(1)
@@ -375,13 +520,13 @@
             let data: _data= reactive({
 				event:<_event>"",
 				ticket_classes: <ticketClassType[]>[],
-				requested_info: <requestedInformationType[]>[]
+				requested_information: <requestedInformationType[]>[]
             })
-            let requested_info_answers =  ref<requestedInformationAnswerType[]>([])
+            let requested_information_answers =  ref<requestedInformationAnswerType[]>([])
 			let payload= reactive<_payload>({
 				event: <_event>"",
 				email: <string>"",
-				requested_info_answers: <requestedInformationAnswerType[]>[]
+				requested_information_answers: <requestedInformationAnswerType[]>[]
             })
             
 			// METHODS
@@ -390,7 +535,7 @@
 			const initial = {
 				event:<_event>"",
 				ticket_classes: <ticketClassType[]>[],
-				requested_info: <requestedInformationType[]>[]
+				requested_information: <requestedInformationType[]>[]
 			}
 			Object.assign(data, initial)
 		}
@@ -398,7 +543,7 @@
 			const initial = {
 				event: <_event>"",
 				email: <string>"",
-				requested_info_answers: <requestedInformationAnswerType[]>[]
+				requested_information_answers: <requestedInformationAnswerType[]>[]
             }
 			Object.assign(payload, initial)
 		}
@@ -429,10 +574,10 @@
 				else if (step.value==3){
 					if(step.value==3){
 						answerQuestions()
-						for(let index=0; index < requested_info_answers.value.length; index++){
-							let payload = requested_info_answers.value[index]
+						for(let index=0; index < requested_information_answers.value.length; index++){
+							let payload = requested_information_answers.value[index]
 							await axios
-								.post(`/api/v1/requested-info-answers/verify/`, 
+								.post(`/api/v1/requested-information-answers/verify/`, 
 									payload)
 								.then( (response: ResponseObjectType) => {
 								})
@@ -443,7 +588,7 @@
 						}
 					}
 					if (!encounteredError){
-						let counter = data.requested_info.filter((x: requestedInformationType) => {
+						let counter = data.requested_information.filter((x: requestedInformationType) => {
 							return x.data.required && x.data.data.length==0
 						})
 						encounteredError = counter.length !==0 ? true : false
@@ -499,7 +644,7 @@
         }
         const addRequestedInfo = (x: reponseRequestedInformationType) => {
 			let extraInfo = <requestedInformationType>{}
-			extraInfo.id = data.requested_info.length+1
+			extraInfo.id = data.requested_information.length+1
 			extraInfo.data = {
 				id: x.id,
 				title: x.title,
@@ -510,7 +655,7 @@
 				description: x.description,
 				data: '',
 			}
-			data.requested_info.push(extraInfo)
+			data.requested_information.push(extraInfo)
         }
         const submit = async ()=>{
 			modal.state = CONSTANTS.busy
@@ -533,11 +678,11 @@
 			
 			if (!encounteredError){
 				///////////////// submit the requested information answers
-				for(let index=0; index < requested_info_answers.value.length; index++){
-					let payload:any  = requested_info_answers.value[index]
+				for(let index=0; index < requested_information_answers.value.length; index++){
+					let payload:any  = requested_information_answers.value[index]
 					payload.ticket = ticket
 					await axios
-						.post(`/api/v1/requested-info-answers/`, 
+						.post(`/api/v1/requested-information-answers/`, 
 							payload)
 						.then( response => {
 
@@ -560,26 +705,27 @@
 
         }
         const answerQuestions = ()=>{
-			data.requested_info.map((x: requestedInformationType) => {
+			data.requested_information.map((x: requestedInformationType) => {
 				if (x.data.data.length !== 0){
 					let data: requestedInformationAnswerType = {
-						'requested_info': x.data.id,
+						'requested_information': x.data.id,
 						"answer"  :  x.data.data
 					}
-					requested_info_answers.value.push(data)
+					requested_information_answers.value.push(data)
 				}
 
 			})
         }
         const next = ()=>{
-
-			buttons.footer.primary.text = "next"
-			buttons.footer.primary.disabled = false
-			step.value += 1
-		}
-		const previous = () =>{
-			if (step.value > 1){
+				if (step.value < totalSteps.value){
+					step.value += 1
+					routeDirection.value="forward"
+				}
+			}
+		const previous = ()=>{
+			if (step.value != 1){
 				step.value -= 1
+				routeDirection.value="backward"
 			}
 		}
 
@@ -635,6 +781,9 @@
 			}
 			closeModal()
 		}
+		const routeDirectionY = computed(() => {
+				return routeDirection.value=='forward'? 'top' : 'bottom'
+		})
 
             return {
 				CONSTANTSX,
@@ -643,9 +792,10 @@
 				buttons,
 				modal,
 				data,
-				requested_info_answers,
+				requested_information_answers,
 				payload,
 				paymentRequired,
+				routeDirectionY,
 
 				summerize,
 				validate,

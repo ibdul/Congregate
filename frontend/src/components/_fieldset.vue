@@ -114,19 +114,10 @@
 
 
 <style lang='scss' scoped>
-	label {
-		display: block;
-		text-transform: capitalize;
-		font-weight: bold;
-		font-size: 0.8rem;
-		margin-left: $g0;
-		margin-bottom: $g-1;
-	}
+	
 	.help_text {
-		font-family: georgia;
 		font-style: italic;
 		font-size: 12px;
-		margin: 0;
 		margin-top: 4px;
 		margin-left: 8px;
 	}

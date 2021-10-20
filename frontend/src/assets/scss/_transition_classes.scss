@@ -1,0 +1,47 @@
+.toast {
+    
+    &-enter-from, &-leave-to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    &-leave-active {
+        position: absolute;
+    }
+    
+    &-enter-active, &-leave-active, &-move {
+        transition: .3s ease;
+    }
+}
+.fade {
+    
+    &-enter-from, &-leave-to {
+        opacity: 0;
+    }
+    
+    &-enter-active, &-leave-active {
+        transition: .5s ease;
+    }
+}
+.modal {
+    
+    &-enter-from, &-leave-to {
+        // transform: translateY(-10px);
+        opacity: 0;
+    }
+    
+    &-enter-active, &-leave-active {
+        transition: .5s ease;
+    }
+}
+.collapsible {
+    
+    &-enter-from, &-leave-to {
+        transform: translateY(-40px);
+        opacity: 0;
+    }
+    
+    &-enter-active, &-leave-active {
+        transition: .5s ease;
+    }
+}

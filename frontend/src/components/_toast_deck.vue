@@ -1,8 +1,10 @@
 <template>
 	<div class="toast_deck">
-        <slot>
-        </slot>
-	</div>
+        <transition-group name="toast" tag="div" class="toast_deck_list">
+            <slot>
+            </slot>
+	    </transition-group>
+    </div>
 </template>
 
 <script lang="ts">
@@ -20,8 +22,9 @@
     .toast_deck {
         position: fixed;
         right: 2%;
-        bottom: 2%;
+        bottom: 8%;
         z-index: 99;
+        max-width: 60vw;
 
         &_list{
             position: relative;

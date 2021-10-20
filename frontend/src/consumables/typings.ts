@@ -52,19 +52,6 @@ export interface  ticketClassType{
     }
 }
 
-// export interface requestedInformationType{
-//     id?: number,
-//     data :  {
-//         id?: number,
-//         title: string,
-//         kind: string,
-//         required: boolean,
-//         maxlength: number,
-//         short_description: string,
-//         description: string,
-//         data: any,
-//     }
-// }
 
 export interface responseTicketClassType {
     id?: number,
@@ -75,7 +62,8 @@ export interface responseTicketClassType {
 
 
 export interface requestedInformationAnswerType{
-    requested_info?:number,
+    requested_information?:number,
     answer  :  any
 }
 
+export type routeDirectionType = 'forward' | 'backward'

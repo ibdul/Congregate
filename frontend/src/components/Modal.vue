@@ -2,7 +2,10 @@
 	<div>
 		<div class="overlay"  @click="$emit('close')" ></div>
 
-		<div  class="modal full-bleed">
+		<div
+			class="modal"
+			:class="striped?'modal-striped':''"
+			>
 				<div class="modal__head">
 					<button type="button" class="close"  @click="$emit('close')" v-if="showClose">
 						<span aria-hidden="true">&times;</span>
@@ -56,6 +59,10 @@
 			showClose: {
 				default: true,
 				type: Boolean
+			},
+			striped: {
+				type: Boolean,
+				default: false,
 			}
 		}
 	})
@@ -97,7 +104,7 @@
 		color: #000;
 		text-shadow: 0 1px 0 #fff;
 		border: none;
-		opacity: .4;
+		opacity: .85;
 		background-color: transparent;
 	}
 	.close:hover{
@@ -111,7 +118,8 @@
 		background: white;
 		color: $c1;
 
-		width: 70%;
+		width: 80vw;
+		max-width: 600px;
 		padding: 20px;
 		z-index: 98;
 		top: 50%;
@@ -144,9 +152,27 @@
 					font-size: 4rem;
 					margin: auto;
 					color: $c1-2;
+					opacity:.2;
 					top: 50%;
 					transform: translateY(-50%);
 					right: 0;
+				}
+			}
+		}
+		&-striped {
+			.modal__body{
+
+				//  > *:nth-child(even),
+				//  > .stack > *:nth-child(even){
+				// 	background: $c1-2;
+				// 	// opacity:.2;
+				// }
+
+				& ,
+				& > .stack {
+					&> *+* {
+						border-top: solid;
+					}
 				}
 			}
 		}

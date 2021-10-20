@@ -18,7 +18,7 @@ mark {
 
 .bleed{
     display: grid;
-    grid-template-columns: 1fr min(65ch, calc(100% - 12px)) 1fr;
+    grid-template-columns: 1fr min(65ch, calc(100% - $g1)) 1fr;
     // gap: 32px;
 
     & > * {
@@ -26,7 +26,8 @@ mark {
     }
 
     .full-bleed{
-        width: 80vw;
+        width: 100%;
+        max-width: 80vw;
         grid-column: 1/-1;
     }
 }
@@ -36,16 +37,20 @@ mark {
     display: flex;
     flex-direction: column;
     align-content: center;
-    justify-content: center;
+    justify-content: space-between;
     // align-items: center;
 
-    min-height: 100vh;
+    min-height: 96vh;
+
+    & > *+* {
+        margin-top: $g1;
+    }
 
 }
 .header, .footer {
     width: 100%;
     display: flex;
-    position: absolute;
+    position: relative;
     align-items: center;
     justify-content: space-between;
 
@@ -57,16 +62,28 @@ mark {
         font-size: 13px;
         }
 }
-.header{
-    top: 0;
-}
+
 .footer{
-    bottom: 0;
     flex-direction: row-reverse;
 }
 
 ::placeholder {
     color: $c1;
+    padding-left: 4px;
+    width: 100%;
+}
+label {
+    display: block;
+    text-transform: capitalize;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-left: $g0;
+    margin-bottom: $g-1;
+}
+::placeholder,
+.page_suptitle, .page_subtitle,
+.help_text{
+    font-family: 'segoe UI';
 }
 .main_header {
     margin: 40px 4px;

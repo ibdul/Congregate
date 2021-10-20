@@ -1,5 +1,5 @@
 <template>
-	<div  class="card_deck full-bleed">
+	<div  class="card_deck">
 
 		<slot>
 		</slot>
@@ -16,56 +16,50 @@
 </script>
 
 <style lang="scss">
-	.card_deck {
-		// display: inline-flex;
-		// flex-wrap: wrap;
-	    // align-items: center;
-		// gap: $g-1;
+	.card_deck{
+		display: grid;
+		grid-gap: $s-sm;
+		grid-template-columns: 186px;
+		grid-auto-flow: column;
+		grid-auto-columns: 186px;
 
-		// &-fluid {
-		// 	width: 100%;
-		// 	justify-content: space-around;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x proximity;
+		padding-bottom: calc(.75 * $s-sm);
+		margin-bottom: calc(.25 *  $s-sm);
 
-		// 	.card {
-		// 		flex: 1;
-		// 		min-width: 40%;
-		// 	}
-		// }
-		position: relative;
-		display: flex;
-		padding: 1rem .4em;
-		flex-grow: 1;
-		overflow: auto;
-		align-items: stretch;
-
-		.card {
+		.card{
+			scroll-snap-align: center;
+			padding: calc(($s-sm/2) *1.5);
 			display: flex;
-			position: relative;
-			align-items: stretch;
-			height: 220px;
-			padding: 1.5rem;
-			flex: none;
-			border-radius: 16px;
-			// background: #40394e;
-			box-shadow: -1rem 0 3rem rgba(0,0,0,.3);
-			transition: .2s;
-			justify-content: space-evenly;
 			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 
-			&:not(:first-child) {
-				margin-left: -130px;
-			}
-			&:hover {
-				transform: translateY(-1rem);
+		}
 
-				&~.card {
-					transform: translateX(130px);
+		&-fluid {
+			display: inline-flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: $g-1;
+
+			width: 100%;
+			justify-content: space-around;
+
+			.card {
+				min-width: 40%;
+
+				&-fluid{
+					flex: 1;
+				}
+
+				& :hover{
+					padding: 1.2rem .4em;
 				}
 			}
 		}
-		& .card:hover{
-			padding: 1.2rem .4em;
-		}
+
 	}
-	
 </style>

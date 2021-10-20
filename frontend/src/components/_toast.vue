@@ -39,11 +39,12 @@
 
 <style lang='scss' scoped>
 	.toast {
-		opacity: 50%;
+		opacity: 70%;
 		display: flex;
 		align-items: center;
 		flex-direction: row-reverse;
 		width: 100%;
+        backdrop-filter: blur(3px);
 		background: $c2;
 		color: $c1;
 		z-index: 99;
@@ -63,6 +64,7 @@
 			padding: 12px;
 			
 			.spaced {
+				text-transform: uppercase;
 				letter-spacing: .2em;
 			}
 		}
