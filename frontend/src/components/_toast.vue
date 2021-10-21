@@ -4,7 +4,9 @@
             <span aria-hidden="true">&times;</span>
         </button>
         <div class="toast__body">
-            <h4>{{message}}</h4>
+            <h4
+			:class="extra_info.length ? 'spaced':''"
+			>{{message}}</h4>
             <p>{{extra_info}}</p>
 	    </div>
 	</div>
@@ -59,6 +61,10 @@
 		.toast__body {
 			flex: 1;
 			padding: 12px;
+			
+			.spaced {
+				letter-spacing: .2em;
+			}
 		}
 	}
    	.close{

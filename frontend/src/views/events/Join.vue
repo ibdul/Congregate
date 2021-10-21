@@ -9,21 +9,20 @@
             </btn>
         </header>
 
+
+		<stack size="lg">
 		<dots
 			:step='step'
 			:total='totalSteps'
 		/>
-
         <template v-if="step==1">
-
-			<main class="main ">
-				<div class="main_header">
-					<p class="main__suptitle">Join an event</p>
-					<h1 class="main__title">{{step}}. Find event</h1>
-					<p class="main__subtitle">Enter a valid event code to proceed.</p>
-				</div>
-				<form class="" @submit.prevent="validate">
-					
+				<stack size="z">
+					<p class="page_suptitle">Join an event</p>
+					<h1 class="page_title">{{step}}. Find event</h1>
+					<p class="page_subtitle">Enter a valid event code to proceed.</p>
+				</stack>
+				<stack>
+				<form @submit.prevent="validate" class="stack_pass">
 					<field-set
 						field="event code" 
 						placeholder="What is the code to the event you want to join"
@@ -32,18 +31,16 @@
 					/>
 					<input type="submit" hidden=true id="submit-form">
 				</form>
-			</main>
+				</stack>
 		</template>
 
         <template v-if="step==2">
-
-			<main class="main ">
-				<div class="main_header">
-					<p class="main__suptitle">Join an event</p>
-					<h1 class="main__title">{{step}}. Class selection</h1>
-					<p class="main__subtitle"> Click on a card to get it's details.</p>
-
-				</div>
+				<stack size="z">
+					<p class="page_suptitle">Join an event</p>
+					<h1 class="page_title">{{step}}. Class selection</h1>
+					<p class="page_subtitle"> Click on a card to get it's details.</p>
+				</stack>
+				<stack>
 					<card-deck class="card_deck">
 						<card v-for="card in data.ticket_classes" :key="card.id"
 							:class="payload.ticket_class == card.data.id ? 'card-active' : '' "
@@ -52,17 +49,17 @@
 							{{card.data.title}}
 						</card>
 					</card-deck>
-			</main>
+				</stack>
 		</template>
 
         <template v-if="step==3">
-			<main class="main L1">
-				<div class="main_header">
-					<p class="main__suptitle">Join an event</p>
-					<h1 class="main__title">{{step}}. Requested Information</h1>
-					<p class="main__subtitle">Fill in the information below as requested by the event organizers.</p>
-				</div>
-				<form class="L2" @submit.prevent="validate">
+				<stack size="z">
+					<p class="page_suptitle">Join an event</p>
+					<h1 class="page_title">{{step}}. Requested Information</h1>
+					<p class="page_subtitle">Fill in the information below as requested by the event organizers.</p>
+				</stack>
+				<stack>
+				<form class="stack_pass" @submit.prevent="validate">
 					<field-set
 						v-for="field in data.requested_info"
 						:key="field.id"
@@ -79,44 +76,43 @@
 
 					<input type="submit" hidden=true id="submit-form">
 				</form>
-			</main>
-
+				</stack>
 		</template>
 		
 		<template v-if="step==4">
-			<main class="main L1">
-				<div class="main_header">
-					<p class="main__suptitle">Join an event</p>
-					<h1 class="main__title">{{step}}. Payment Information</h1>
+				<stack size="z">
+					<p class="page_suptitle">Join an event</p>
+					<h1 class="page_title">{{step}}. Payment Information</h1>
 					<template v-if="paymentRequired">
-						<p class="main__subtitle">Your Selection requires you to pay a fee.</p>
-						<p class="main__subtitle">Fill the information below to proceed.</p>
+						<p class="page_subtitle">Your Selection requires you to pay a fee.</p>
+						<p class="page_subtitle">Fill the information below to proceed.</p>
 					</template>
 					<template v-else>
-						<p class="main__subtitle">Your Selection doesn't require any fee.</p>
-						<p class="main__subtitle">Fill the information below and then proceed.</p>
+						<p class="page_subtitle">Your Selection doesn't require any fee.</p>
+						<p class="page_subtitle">Fill the information below and then proceed.</p>
 					</template>
-				</div>
+				</stack>
 
+				<stack>
 					<template v-if="paymentRequired">
 						<h3>
 							payment funtionality coming soon!
 						</h3>
 					</template>
 
-				<form class="L2" @submit.prevent="validate">
-					<field-set
-						field="email" 
-						placeholder="Enter  your email"
-						type="email"
-						:required="true"
-						v-model="payload.email"
-					/>
-					<input type="submit" hidden=true id="submit-form">
-				</form>
-			</main>
-
+					<form class="stack_pass" @submit.prevent="validate">
+						<field-set
+							field="email" 
+							placeholder="Enter  your email"
+							type="email"
+							:required="true"
+							v-model="payload.email"
+						/>
+						<input type="submit" hidden=true id="submit-form">
+					</form>
+				</stack>
 		</template>
+		</stack>
 
 		<footer class="footer">
 			<btn
@@ -126,7 +122,7 @@
 				:disabled="buttons.footer.primary.disabled"
 				:class="buttons.footer.primary.status==CONSTANTSX.busy ? 'btn-loading' : '' "
 				>
-                    {{buttons.footer.primary.text}}
+                    {{buttons.footer.primary.status || buttons.footer.primary.text}}
             </btn>
             <btn
 				class="btn-primary-clear"
@@ -152,31 +148,31 @@
             @close="closeModal()"
             >
                 <template #modal__title>
-                        <h4>Find an event</h4>
+                        <h2>Find an event</h2>
                 </template>
                 <template #default>
-                    <section>
-                        <section>
-                            <h4>Title</h4>
+                    <stack>
+                        <stack  size="xsm">
+                            <h5>Title</h5>
                             <p>{{modal.temp.title}}</p>
-                        </section>
-                        <section>
-                            <h4>Type of event</h4>
+                        </stack>
+                        <stack  size="xsm">
+                            <h5>Type of event</h5>
                             <p>{{modal.temp.kind}}</p>
-                        </section>
-                        <section>
-                            <h4>Date Of Event</h4>
+                        </stack>
+                        <stack  size="xsm">
+                            <h5>Date Of Event</h5>
                             <p>{{parseDate(modal.temp.start_date)}}</p>
-                        </section>
-                        <section>
-                            <h4>Venue</h4>
+                        </stack>
+                        <stack  size="xsm">
+                            <h5>Venue</h5>
                             <p>{{modal.temp.venue}}</p>
-                        </section>
-                        <section>
-                            <h4>Description</h4>
+                        </stack>
+                        <stack  size="xsm">
+                            <h5>Description</h5>
                             <p>{{modal.temp.description}}</p>
-                        </section>
-                    </section>
+                        </stack>
+                    </stack>
                 </template>
                 <template #modal__footer>
                     <btn class="" @click="closeModal">close</btn>
@@ -194,18 +190,19 @@
             @close="closeModal()"
             >
                 <template #modal__title>
-                        <h4>Select a ticket class</h4>
+                        <h2>Select a ticket class</h2>
                 </template>
                 <template #default>
-                    <section
+                    <stack
+						size="xsm"
                         v-for="(val, item, id) in modal.temp.data"
                         :key="id"
                         >
-                        <section v-if="item !== 'id'">
-                            <h4>{{item}}</h4>
+                        <stack v-if="item !== 'id'">
+                            <h5>{{item}}</h5>
                             <p>{{val}}</p>
-                        </section>
-                    </section>
+                        </stack>
+                    </stack>
                 </template>
                 <template #modal__footer>
                         <btn class="" @click="closeModal">close</btn>
@@ -223,44 +220,47 @@
             @close="closeModal()"
             >
                 <template #modal__title>
-                        <h4>Summary of your ticket data</h4>
+                        <h2>Summary of your ticket data</h2>
                 </template>
                 <template #default>
-                    <section>
+					<stack>
+                    <stack size="sm">
                         <h3 class="section__title">Basic ticket information</h3>
-                        <section>
-                            <h4>Event Title</h4>
+                        <stack size="xsm">
+                            <h5>Event Title</h5>
                             <p>{{data.event.title}}</p>
-                        </section>
-                        <section>
-                            <h4>TIcket Class</h4>
+                        </stack>
+                        <stack size="xsm">
+                            <h5>TIcket Class</h5>
                             <p>{{data.ticket_class.title}}</p>
-                        </section>
-                        <section>
-                            <h4>Ticket Cost</h4>
+                        </stack>
+                        <stack size="xsm">
+                            <h5>Ticket Cost</h5>
                             <p>{{data.ticket_class.cost}}</p>
-                        </section>
-                    </section>
+                        </stack>
+                    </stack>
 
-                    <section>
+                    <stack size="sm">
                         <h3 class="section__title">Data requested by event organizers</h3>
-                        <section
+                        <stack
+								size="xsm"
                                 v-for="field in data.requested_info"
                                 :key="field.id"
                                 >
-                                <h4>{{field.data.title}}</h4>
+                                <h5>{{field.data.title}}</h5>
                                 <p>{{field.data.data.length!==0? field.data.data : '-'}}</p>
-                        </section>
-                        <h4 v-if="data.requested_info.length==0">No requested data. Please click next to proceed</h4>
-                    </section>
+                        </stack>
+                        <h5 v-if="data.requested_info.length==0">No requested data. Please click next to proceed</h5>
+                    </stack>
                     
-                    <section>
+                    <stack size="sm">
                         <h3 class="section__title">Required data</h3>
-                        <section>
-                            <h4>Email</h4>
+                        <stack size="xsm">
+                            <h5>Email</h5>
                             <p>{{payload.email}}</p>
-                        </section>
-                    </section>
+                        </stack>
+                    </stack>
+				</stack>
                 </template>
                 
                 <template #modal__footer>
@@ -280,18 +280,18 @@
             icon="&#x2713;"
             >
                 <template #modal__title>
-                    <h4>Success</h4>
+                    <h2>Success</h2>
                 </template>
                 
                 <template #default>
-                    <section>
+                    <stack size="sm">
                         <h3>Your Ticket Details</h3>
                         <p>You ticket was successfully registered. Keep the code below safe as you might need it to prove your registration for the event.</p>
-                        <section>
-                            <h4>Ticket code</h4>
+                        <stack size="xsm">
+                            <h5>Ticket code</h5>
                             <p>{{modal.temp.data.ticket}}</p>
-                        </section>
-                    </section>
+                        </stack>
+                    </stack>
                 </template>
 
                 <template #modal__footer>
@@ -415,6 +415,8 @@
 				}
 			}
 			else{
+				buttons.footer.primary.status = CONSTANTSX.busy
+				buttons.footer.primary.disabled = true
 				if (step.value==1){
 					encounteredError = payload.event == "" ? true : false
 				}
@@ -452,8 +454,6 @@
 				}
 			
 				if(encounteredError == false){
-					buttons.footer.primary.text = CONSTANTS.busy
-					buttons.footer.primary.disabled = true
 
 					if(step.value==4){
 						summerize()
@@ -466,20 +466,21 @@
 						})
 						.catch(error => {
 							if (error.response.status==404){
-								$toasts.ErrorToast("Event not found", "danger")
+								$toasts.ErrorToast("Error", "Event not found")
 							}
 							else{
 								$toasts.ErrorToast("Something went wrong")
 							}
 						})
-						buttons.footer.primary.text = "next"
-						buttons.footer.primary.disabled = false
 					}
 					else{
 						next()
 					}
 				}
+				buttons.footer.primary.status = ""
+				buttons.footer.primary.disabled = false
 			}
+
         }
         const parseDate = (raw: Date | string)=>{
 			let date = new Date(raw)

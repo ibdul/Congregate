@@ -26,7 +26,7 @@ mark {
     }
 
     .full-bleed{
-        width: 100%;
+        width: 80vw;
         grid-column: 1/-1;
     }
 }
@@ -71,12 +71,14 @@ mark {
 .main_header {
     margin: 40px 4px;
 }
-.L1 > * {
-    margin: 16px 4px;
+
+.page_suptitle {
+    letter-spacing: .14em;
+    text-transform: uppercase;
 }
-.L2 > * {
-    margin: 8px 4px;
+
+.page_suptitle,
+.page_subtitle {
+    font-size: .8em;
 }
-.L0 > * {
-    margin: 4px 4px;
-}
+

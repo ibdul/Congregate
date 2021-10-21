@@ -10,18 +10,19 @@
 
         </header>
 
+
+		<stack size="lg">
 		<dots
 			:step='step'
 			:total='totalSteps'
 		/>
-
-		<template v-if="step==1">
-			<main class="main L1">
-				<div class="main_header">
-					<p class="main__suptitle">Host an event</p>
-					<h1 class="main__title">{{step}}. Basic Details</h1>
-				</div>
-				<form  id='form-1' class="L2" @submit.prevent="validate">
+			<template v-if="step==1">
+				<stack size="z">
+					<p class="page_suptitle">Host an event</p>
+					<h1 class="page_title">{{step}}. Basic Details</h1>
+				</stack>
+				<stack>
+				<form  id='form-1' class="stack_pass" @submit.prevent="validate">
 					<field-set
 						field="Email" 
 						type="email"
@@ -64,19 +65,18 @@
 					
 					<input type="submit" hidden=true id="submit-1">
 				</form>
-			</main>
-
+				</stack>
 		</template>
 
 		<template v-if="step==2">
-			<main class="main L1">
-				<div class="main_header">
-					<p class="main__suptitle">Host an event</p>
-					<h1 class="main__title">{{step}}. Secondary Details</h1>
-				</div>
+				<stack size="z">
+					<p class="page_suptitle">Host an event</p>
+					<h1 class="page_title">{{step}}. Secondary Details</h1>
+				</stack>
 
-				<form @submit.prevent="validate">
-				<section class="L2">
+				<stack>
+				<form @submit.prevent="validate" class="stack_pass">
+				<stack size="sm">
 				<info>
 					<p>Would your guests be required to pay any fee?</p>
 					<checkbox v-model="collapsibles.fees"/>
@@ -85,21 +85,23 @@
 				<div v-show="collapsibles.fees==true">
 					<field-set
 							field="account" 
+							type="number"
 							placeholder="Enter the account number where the payment would be made to"
 							:required="collapsibles.fees==true"
 							v-model="data.account"
 						/>
-						<!-- <field-set
+						<field-set
 							field="base cost" 
+							type="number"
 							:required="collapsibles.fees==true"
 							placeholder="What would the regular guest have to pay?"
-							v-model="data.base_cost"
-						/> -->
+							v-model="ticket_classes[0].data.cost"
+						/>
 				</div>
 				</transition>
-				</section>
+				</stack>
 
-				<section class="L2">
+				<stack size="sm">
 					<info>
 						<p>How long do you expect the event to last?</p>
 					</info>
@@ -116,29 +118,30 @@
 						placeholder="When would the event end"
 						v-model="data.end_date"
 					/>
-				</section>
+				</stack>
 
 					<input type="submit" hidden=true id="submit-2">
 
 				</form>
+				</stack>
 
-			</main>
+
 		</template>
 
 		<template id='3' v-if="step==3">
-			<main class="main L1">
-				<div class="main_header">
-					<p class="main__suptitle">Host an event</p>
-					<h1 class="main__title">{{step}}. Guest Setup</h1>
-				</div>
+				<stack size="z">
+					<p class="page_suptitle">Host an event</p>
+					<h1 class="page_title">{{step}}. Guest Setup</h1>
+				</stack>
 			<!--  -->
-					<section class="L2">
+				<stack>
+					<stack size="sm">
 						<info>
 							<p>Would you like to collect some information about your guests?</p>
 							<checkbox v-model="collapsibles.requested_info"/>
 						</info>
 						<div v-show="collapsibles.requested_info">
-							<card-deck  class="card_deck-fluid L0">
+							<card-deck>
 								<card
 									v-for="info in requested_info"
 									:key="info.id"
@@ -158,15 +161,15 @@
 								
 							</card-deck>
 						</div>
-					</section>
+					</stack>
 					<!--  -->
-					<section class="L2">
+					<stack size="sm">
 						<info>
 							<p>Would you like to have different classes of guests?</p>
 							<checkbox v-model="collapsibles.ticket_classes"/>
 						</info>
 						<div v-show="collapsibles.ticket_classes">
-							<card-deck class="card_deck-fluid L0" >
+							<card-deck>
 								<card
 									v-for="ticket_class in ticket_classes"
 									:key="ticket_class.id"
@@ -186,7 +189,7 @@
 
 							</card-deck>
 						</div>
-					</section>
+					</stack>
 					<!--  -->
 					<!-- <form @submit.prevent="validate"> -->
 					<field-set
@@ -218,8 +221,10 @@
 						</form>
 							</div>
 					</section> -->
-			</main>
+				</stack>
+
 		</template>
+		</stack>
 
 
 		<footer class="footer">
@@ -256,30 +261,32 @@
 			@close="closeModal"
 			>
 				<template #modal__title>
-					<h4
+					<h2
 						v-if="modal.editing == true"
 						>
 						{{modal.new ? 'Add a' : 'Edit'}} question for your guests
-					</h4>
-					<h4
+					</h2>
+					<h2
 						v-else
 						>
 						Question
-					</h4>
+					</h2>
 				</template>
 				<template #default>
-					<section
+					<stack
 						v-if="modal.editing == true"
 						>
-						<form @submit.prevent="validateModal">
+						<form @submit.prevent="validateModal" class="stack_pass">
 							<field-set
 									field="title" 
 									placeholder="What would the field be called?"
 									:required="true"
 									v-model="modal.temp.data.title"
 								/>
+							<p>
+							<label>
+								<small>What type of data is expected for this field?</small>
 							<select
-								placeholder="What type of data is expected for this field?"
 								:required="true"
 								v-model="modal.temp.data.kind"
 								>
@@ -287,12 +294,14 @@
 									{{readable}}
 								</option>
 							</select>
-							<field-set
-										type="checkbox"
-										field="required field ?" 
-										placeholder="is this field a required field?"
-										v-model="modal.temp.data.required"
-								/>
+							</label>
+							</p>
+
+							<info>
+								<small>Is this field a required field?</small>
+								<checkbox v-model="modal.temp.data.required"/>
+							</info>
+
 							<field-set
 										type="number"
 										:max="200"
@@ -316,35 +325,35 @@
 								/>
 							<input type="submit" hidden=true id="submit-modal-requested_info">
 						</form>
-					</section>
-					<section
+					</stack>
+					<stack
 						v-else
 						>
-						<section>
-							<h4>Title</h4>
+						<stack size="xsm">
+							<h5>Title</h5>
 							<p>{{modal.temp.data.title || '-'}}</p>
-						</section>
-						<section>
-							<h4>Type</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Type</h5>
 							<p>{{modal.temp.data.kind || '-'}}</p>
-						</section>
-						<section>
-							<h4>Required</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Required</h5>
 							<p>{{modal.temp.data.required || '-'}}</p>
-						</section>
-						<section>
-							<h4>Max digits</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Max digits</h5>
 							<p>{{modal.temp.data.maxlength || '-'}}</p>
-						</section>
-						<section>
-							<h4>Short Description</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Short Description</h5>
 							<p>{{modal.temp.data.short_description || '-'}}</p>
-						</section>
-						<section>
-							<h4>Description</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Description</h5>
 							<p>{{modal.temp.data.description || '-'}}</p>
-						</section>
-					</section>
+						</stack>
+					</stack>
 				</template>
 				<template #modal__footer>
 					<section
@@ -373,22 +382,22 @@
 			@close="closeModal()"
 			>
 				<template #modal__title>
-					<h4
+					<h2
 						v-if="modal.editing == true"
 						>
 						{{modal.new ? 'Add a' : 'Edit'}} ticket class
-					</h4>
-					<h4
+					</h2>
+					<h2
 						v-else
 						>
 						Ticket class
-					</h4>
+					</h2>
 				</template>
 				<template #default>
-					<section
+					<stack
 						v-if="modal.editing == true"
 						>
-						<form @submit.prevent="validateModal">
+						<form @submit.prevent="validateModal" class="stack_pass">
 									<field-set
 											field="title" 
 											placeholder="What would the class be called?"
@@ -412,18 +421,19 @@
 								/>
 								<input type="submit" hidden=true id="submit-modal-ticket_class">
 							</form>
-					</section>
-					<section
+					</stack>
+					<stack
 						v-else
 						>
 						
-						<section
+						<stack
+							size="xsm"
 							v-for="(val, data, id) in modal.temp.data" :key="id"
 							>
-							<h4>{{data}}</h4>
+							<h5>{{data}}</h5>
 							<p>{{val || '-'}}</p>
-						</section>
-					</section>
+						</stack>
+					</stack>
 							
 				</template>
 				<template #modal__footer>
@@ -458,88 +468,114 @@
 			v-if="modal.visible && modal.type=='summary' "
 			@close="closeModal()"
 			>
+			
 				<template #modal__title>
-					<h4>Event Summary</h4>
+					<h2>Event Summary</h2>
 				</template>
 				<template #default>
-					<section>
+					<stack
+						size="lg"
+						>
+					<stack size="sm">
 						<h3>Event Details</h3>
-						<section>
-							<h4>Event title</h4>
+						<stack size="xsm">
+							<h5>Event title</h5>
 							<p>{{data.title || '-'}}</p>
-						</section>
-						<section>
-							<h4>Type</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Type</h5>
 							<p>{{data.kind || '-'}}</p>
-						</section>
-						<section>
-							<h4>Venue</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Venue</h5>
 							<p>{{data.venue || '-'}}</p>
-						</section>
-						<section>
-							<h4>Description</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Description</h5>
 							<p>{{data.description || '-'}}</p>
-						</section>
-						<section>
-							<h4>Date</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Date</h5>
 							<p>{{data.start_date || '-'}}</p>
-						</section>
-						<section>
-							<h4>End Date</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>End Date</h5>
 							<p>{{data.end_date || '-'}}</p>
-						</section>
-						<section>
-							<h4>Maximum number of guests</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Maximum number of guests</h5>
 							<p>{{data.max_guests || '-'}}</p>
-						</section>
-						<section>
-							<h4>Account Number</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Account Number</h5>
 							<p>{{data.account || '-'}}</p>
-						</section>
-						<section>
-							<h4>Email</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Email</h5>
 							<p>{{data.created_by || '-'}}</p>
-						</section>
-					</section>
+						</stack>
+					</stack>
 
-					<section>
+					<stack class="stack_deck">
 						<h3>Ticket Classes</h3>
-						<section
+						<stack
+							size="sm"
+							class="multi"
 							v-for="ticket_class in ticket_classes" :key="ticket_class.id"
 							>
-							<section>
-								<h4>Title</h4>
+							<h4 class="count">{{ticket_class.id}}</h4>
+							<stack size="xsm">
+								<h5>Title</h5>
 								<p>{{ticket_class.data.title || '-'}}</p>
-								<h4>Description</h4>
+							</stack>
+							<stack size="xsm">
+								<h5>Description</h5>
 								<p>{{ticket_class.data.description || '-'}}</p>
-								<h4>Cost</h4>
+							</stack>
+							<stack size="xsm">
+								<h5>Cost</h5>
 								<p>{{ticket_class.data.cost || '-'}}</p>
-							</section>
-						</section>
-						<h4 v-if="ticket_classes.length==0">-</h4>
-					</section>
+							</stack>
+						</stack>
+						<h5 v-if="ticket_classes.length==0">-</h5>
+					</stack>
 
-					<section>
-						<h3>Extra Info</h3>
-						<section
+					<stack class="stack_deck">
+						<h3>Requested Information</h3>
+						<stack
+							size="sm"
+							class="multi"
 							v-for="info in requested_info" :key="info.id"
 							>
-							<h4>Title</h4>
-							<p>{{info.data.title || '-'}}</p>
-							<h4>Type</h4>
-							<p>{{info.data.kind || '-'}}</p>
-							<h4>Required</h4>
-							<p>{{info.data.required}}</p>
-							<h4>Maximum number of characters</h4>
-							<p>{{info.data.maxlength || '-'}}</p>
-							<h4>Short Description</h4>
-							<p>{{info.data.short_description || '-'}}</p>
-							<h4>Description</h4>
-							<p>{{info.data.description || '-'}}</p>
-						</section>
-						<h4 v-if="requested_info.length==0">-</h4>
-					</section>
-							
+							<h4 class="count">{{info.id}}</h4>
+							<stack size="xsm">
+								<h5>Title</h5>
+								<p>{{info.data.title || '-'}}</p>
+							</stack>
+							<stack size="xsm">
+								<h5>Type</h5>
+								<p>{{info.data.kind || '-'}}</p>
+							</stack>
+							<stack size="xsm">
+								<h5>Required</h5>
+								<p>{{info.data.required}}</p>
+							</stack>
+							<stack size="xsm">
+								<h5>Maximum number of characters</h5>
+								<p>{{info.data.maxlength || '-'}}</p>
+							</stack>
+							<stack size="xsm">
+								<h5>Short Description</h5>
+								<p>{{info.data.short_description || '-'}}</p>
+							</stack>
+							<stack size="xsm">
+								<h5>Description</h5>
+								<p>{{info.data.description || '-'}}</p>
+							</stack>
+						</stack>
+						<h5 v-if="requested_info.length==0">-</h5>
+					</stack>
+				</stack>
 				</template>
 				<template #modal__footer>
 					<section>
@@ -560,22 +596,24 @@
 			icon="&#x2713;"
 			>
 				<template #modal__title>
-					<h4>Success</h4>
+					<h2>Success</h2>
 				</template>
 				
 				<template #default>
-					<section>
-						<h3>Your Event Details</h3>
-						<p>You event was successfully registered. Keep these details safe as you would need them to manage your event.</p>
-						<section>
-							<h4>Event code</h4>
+					<stack>
+						<stack size="xsm">
+							<h3>Your Event Details</h3>
+							<p>You event was successfully registered. Keep these details safe as you would need them to manage your event.</p>
+						</stack>
+						<stack size="xsm">
+							<h5>Event code</h5>
 							<p>{{modal.temp.event}}</p>
-						</section>
-						<section>
-							<h4>Pass code</h4>
+						</stack>
+						<stack size="xsm">
+							<h5>Pass code</h5>
 							<p>{{modal.temp.pass}}</p>
-						</section>
-					</section>
+						</stack>
+					</stack>
 				</template>
 
 				<template #modal__footer>
@@ -589,34 +627,13 @@
 </template>
 
 <script lang="ts">
-	type modalType = "requested_info" | "ticket_class" | "summary" | "event-details"
-	interface requestedInformationType {
-		id: number,
-		data:{
-			event?: string,
-			title: string,
-			kind: string,
-			required: boolean,
-			maxlength?: string,
-			short_description: string,
-			description: string,
-		}
-	}
-	interface ticketClassType {
-		id: number,
-		deletable?: boolean,
-		data:{
-			event?: string,
-			title: string,
-			description: string,
-			cost: number,
-		}
-	}
+	type _modalType = "requested_info" | "ticket_class" | "summary" | "event-details"
+
 	
 	import axios from 'axios'
 
 	import CONSTANTS from '@/consumables/constants'
-	import { ResponseObjectType, ResponseErrorObjectType } from '@/consumables/typings'
+	import { requestedInformationType, ticketClassType, ResponseObjectType, ResponseErrorObjectType } from '@/consumables/typings'
 	import { useToasts } from '@/consumables/plugins'
 
 	import { defineComponent, reactive, ref } from 'vue'
@@ -675,7 +692,6 @@
 				end_date: null,
 				max_guests: null,
 				account: null,
-				// "base_cost": null,
 				refundable: false,
 				refund_deadline: null,
 				created_by: ""
@@ -720,6 +736,7 @@
 				}
 			}
 			const validate = (fromButton=false)=>{
+				buttons.footer.primary.status = CONSTANTSX.busy
 				let encounteredError = false
 				if (fromButton==true){
 					let submitBtn: HTMLElement = document.querySelector(`#submit-${step.value}`) as HTMLElement
@@ -731,6 +748,8 @@
 						next()
 					}
 				}
+				buttons.footer.primary.status = ''
+
 			}
 			const summerize = ()=>{
 				openModal("summary", 'summary')
@@ -947,7 +966,7 @@
 				// todo
 				// use confirmation
 			}
-			const addModalData = (type: modalType) =>{
+			const addModalData = (type: _modalType) =>{
 				let payload = {}
 
 				if (type == "requested_info"){

@@ -46,7 +46,12 @@
 		padding: 16px;
 		height: 186px;
 		// margin: 12px;
-	    border-radius: 16px;
+		border-radius: 16px;
+		
+		&.add {
+			opacity: .8;
+			backdrop-filter: blur(2px);
+		}
 
 		&__main {
 			font-size: x-large;

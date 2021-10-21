@@ -1,14 +1,18 @@
 <template>
 	<div class="container">
 
-		<main class="main">
+		<stack
+			size="lg"
+			>
 
-			<div class="main_header">
-				<h1 class="main__title">Welcome,</h1>
-				<p class="main__subtile">What would you like to do on the app today?</p>
-			</div>
+			<stack size="z">
+				<p class="page_suptitle">Home</p>
+				<h1 class="page_title">Welcome,</h1>
+				<p class="page_subtitle">What would you like to do on the app today?</p>
+			</stack>
 
 
+			<stack>
 			<info class="info-fluid" v-if="counts.events>0">
 				<p><mark>{{counts.events}}</mark> event<template v-if="counts.events>1">s</template> registered </p>
 				<p><mark>{{counts.tickets}}</mark> ticket<template v-if="counts.tickets>1">s</template> registered</p>
@@ -33,7 +37,9 @@
 				>
 				Manage an event
 			</card>
-		</main>
+			</stack>
+
+		</stack>
 
 
 		<footer class="footer footer-center">

@@ -15,18 +15,19 @@
             </btn>
         </header>
 	
-	<dots
-		:step='step'
-		:total='totalSteps'
-	/>
 
+		<stack size="lg">
+		<dots
+			:step='step'
+			:total='totalSteps'
+		/>
 		<template v-if="step==1">
-			<main class="main L1">
-				<div class="main_header">
-					<p class="main__suptitle">Manage event</p>
-					<h1 class="main__title">{{step}}. Find event</h1>
-				</div>
-				<form  id='form-1' class="L2" @submit.prevent="validate()">
+				<stack size="z">
+					<p class="page_suptitle">Manage event</p>
+					<h1 class="page_title">{{step}}. Find event</h1>
+				</stack>
+				<stack>
+				<form  id='form-1' class="stack_pass" @submit.prevent="validate()">
 					<field-set
 						field="event code" 
 						placeholder="What is the code to your event?"
@@ -42,18 +43,17 @@
 					
 					<input type="submit" hidden=true id="submit-form">
 				</form>
-			</main>
+				</stack>
 		</template>
 		
 		<template v-if="step==2">
-			<main class="main L1">
-				<div class="main_header">
-					<p class="main__suptitle">Manage event</p>
-					<h1 class="main__title">{{step}}. Guests list</h1>
-					<p class="main__subtitle" v-if="data.tickets.length">Click on a guest to see more details.</p>
-				</div>
-				<div>
+				<stack size="z">
+					<p class="page_suptitle">Manage event</p>
+					<h1 class="page_title">{{step}}. Guests list</h1>
+					<p class="page_subtitle" v-if="data.tickets.length">Click on a guest to see more details.</p>
+				</stack>
 
+				<stack>
 					<table v-if="data.tickets.length">
 						<thead>
 							<tr>
@@ -76,9 +76,9 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
-			</main>
+				</stack>
 		</template>
+		</stack>
 
 		<footer class="footer">
 
@@ -110,44 +110,48 @@
 			@close="closeModal()"
 			>
 				<template #modal__title>
-						<h4>Ticket</h4>
+						<h2>Ticket</h2>
 				</template>
 				<template #default>
-					<section>
+					<stack>
+					<stack size="sm">
 						<h3 class="section__title">Basic ticket information</h3>
-						<section>
-							<h4>Ticket Code</h4>
+						<stack size="z">
+							<h5>Ticket Code</h5>
 							<p>{{modal.temp.code}}</p>
-						</section>
-						<section>
-							<h4>TIcket Class</h4>
+						</stack>
+						<stack size="z">
+							<h5>TIcket Class</h5>
 							<p>{{modal.temp.ticket_class}}</p>
-						</section>
-						<section>
-							<h4>Email</h4>
+						</stack>
+						<stack size="z">
+							<h5>Email</h5>
 							<p>{{modal.temp.email}}</p>
-						</section>
-					</section>
+						</stack>
+					</stack>
 
-					<section>
+					<stack size="sm">
 						<h3 class="section__title">Requested data</h3>
-						<section
+						<stack
+								size="z"
 								v-for="(field, id) in modal.temp.requested_information_answers"
 								:key="id"
 								>
-								<h4>{{field.requested_information}}</h4>
+								<h5>{{field.requested_information}}</h5>
 								<p>{{field.answer}}</p>
-						</section>
-						<h4 v-if="modal.temp.requested_information_answers.length==0">No data to display</h4>
-					</section>
+						</stack>
+						<p v-if="modal.temp.requested_information_answers.length==0">No data to display</p>
+					</stack>
 					
-					<!-- <section>
+					<!-- <stack>
 						<h3 class="section__title">Required data</h3>
-						<section>
-							<h4>Email</h4>
+						<stack>
+							<h5>Email</h5>
 							<p>{{payload.email}}</p>
-						</section>
-					</section> -->
+						</stack>
+					</stack> -->
+
+					</stack>
 				</template>
 				
 				<template #modal__footer>
@@ -181,7 +185,7 @@
 		event: string,
 		pass: string,
 	}
-	type _modalTypes = 'ticket'
+	type _modalType = 'ticket'
 
     export default defineComponent({
 
@@ -250,7 +254,7 @@
 							.catch((error: ResponseErrorObjectType) => {
 								encounteredError = true
 								if (error.response.status==404){
-									$toasts.ErrorToast("Event not found")
+									$toasts.ErrorToast("Error", "Event not found")
 								}
 								else{
 									$toasts.ErrorToast("Something went wrong")
@@ -274,7 +278,7 @@
 					step.value -= 1
 				}
 			}
-			const openModal = (data: any, type: _modalTypes)=>{
+			const openModal = (data: any, type: _modalType)=>{
 				modal.temp = data
 				modal.visible = true
 				modal.type = type
@@ -290,7 +294,20 @@
 				modal.state = ''
 			}
 			const downloadCsv = async()=>{
-				$toasts.ErrorToast("functionality requires some backend magic")
+				await axios
+					.post(`/api/v1/events/downloadCSV/`, 
+						payload)
+					.then( (response: any) => {
+						const blob = new Blob([response.data], {type:"text/csv"})
+						const link = document.createElement('a')
+						link.href = URL.createObjectURL(blob)
+						link.download = `event-${payload.event}.csv`
+						link.click()
+						URL.revokeObjectURL(link.href)
+					})
+					.catch( error => {
+						$toasts.ErrorToast("Something went wrong")
+					})
 			}
 
 		return{

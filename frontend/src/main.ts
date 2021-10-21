@@ -10,6 +10,7 @@ axios.defaults.baseURL = "http://127.0.0.1:8000"
 import plugins from './consumables/plugins'
 
 import _toast from './components/_toast.vue'
+import _stack from './components/_stack.vue'
 import toast_deck from './components/_toast_deck.vue'
 import btn from './components/_button.vue'
 import _card from './components/_card.vue'
@@ -24,6 +25,7 @@ import modal from './components/Modal.vue'
 const APP = createApp(App)
 
 APP.component("toast", _toast)
+APP.component("stack", _stack)
 APP.component("toast-deck", toast_deck)
 APP.component("btn", btn)
 APP.component("card", _card)

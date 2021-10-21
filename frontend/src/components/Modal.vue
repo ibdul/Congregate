@@ -2,7 +2,7 @@
 	<div>
 		<div class="overlay"  @click="$emit('close')" ></div>
 
-		<div  class="modal L0">
+		<div  class="modal full-bleed">
 				<div class="modal__head">
 					<button type="button" class="close"  @click="$emit('close')" v-if="showClose">
 						<span aria-hidden="true">&times;</span>
@@ -11,9 +11,11 @@
 						<span aria-hidden="true">{{ icon }}</span>
 					</button>
 
-					<slot name="modal__title">
-						modal title
-					</slot>
+					<section class="modal__title">
+							<slot name="modal__title">
+								modal title
+							</slot>
+					</section>
 				</div>
 
 				<div class="modal__body">
@@ -122,27 +124,36 @@
 		h4, h3, h2 {
 			text-transform: capitalize;
 		}
-
-		&__body {
-
-			& > section + section {
-				margin-top: 23px;
+		&__title {
+			h2 {
+			font-weight: normal;
+			font-size: 1em;
+			letter-spacing: .2em;
 			}
-
-			& > section > *:not(h3) {
-				margin-left: 12px;
-				background: aliceblue;
-    			margin-top: 12px;
-			}
-
 		}
+		&__body {
+			margin: $g1 0 $g1 0;
+
+			.stack_deck > .multi + .multi {
+				border-top: 2px solid $c1-2;
+			}
+			.multi {
+				position: relative;
+				.count {
+					position: absolute;
+					font-size: 4rem;
+					margin: auto;
+					color: $c1-2;
+					top: 50%;
+					transform: translateY(-50%);
+					right: 0;
+				}
+			}
+		}
+
 	}
 	.right{
 		float: right;
-	}
-
-	.L0 > * + * {
-		margin-top: 16px;
 	}
 
 </style>

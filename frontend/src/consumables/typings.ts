@@ -26,19 +26,45 @@ export interface reponseRequestedInformationType{
     data?: any,
 }
 
-export interface requestedInformationType{
-    id?: number,
-    data :  {
+export interface requestedInformationType {
+    id: number,
+    data:{
         id?: number,
+        event?: string,
         title: string,
         kind: string,
         required: boolean,
-        maxlength: number,
+        maxlength?: number,
         short_description: string,
         description: string,
         data: any,
     }
 }
+export interface  ticketClassType{
+    id: number,
+    deletable?: boolean,
+    data:{
+        id?: number,
+        event?: string,
+        title: string,
+        description: string,
+        cost: number | null,
+    }
+}
+
+// export interface requestedInformationType{
+//     id?: number,
+//     data :  {
+//         id?: number,
+//         title: string,
+//         kind: string,
+//         required: boolean,
+//         maxlength: number,
+//         short_description: string,
+//         description: string,
+//         data: any,
+//     }
+// }
 
 export interface responseTicketClassType {
     id?: number,
@@ -47,15 +73,6 @@ export interface responseTicketClassType {
     cost: number
 }
 
-export interface ticketClassType {
-    id?: number,
-    data: {
-        id?: number,
-        title: string,
-        description: string,
-        cost: number
-    }
-}
 
 export interface requestedInformationAnswerType{
     requested_info?:number,
