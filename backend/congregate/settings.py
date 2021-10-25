@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
     # local
     'events',
+    'feedback',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +157,5 @@ SUPPORTED_INPUT_TYPES={
     ("password", "password"),
     ( "url", "website link"),
 }
+
+ADMIN_ADDRESS = envVars("ADMIN_ADDRESS")

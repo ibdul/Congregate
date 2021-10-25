@@ -16,6 +16,24 @@ mark {
     vertical-align: middle;
 }
 
+a {
+    color: $c2;
+}
+
+label {
+    display: block;
+    text-transform: capitalize;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-left: $g0;
+    margin-bottom: $g-1;
+}
+::placeholder {
+    color: $c1;
+    padding-left: 4px;
+    width: 100%;
+}
+
 .bleed{
     display: grid;
     grid-template-columns: 1fr min(65ch, calc(100% - $g1)) 1fr;
@@ -60,34 +78,13 @@ mark {
     }
     p {
         font-size: 13px;
-        }
+    }
 }
 
 .footer{
     flex-direction: row-reverse;
 }
 
-::placeholder {
-    color: $c1;
-    padding-left: 4px;
-    width: 100%;
-}
-label {
-    display: block;
-    text-transform: capitalize;
-    font-weight: bold;
-    font-size: 0.8rem;
-    margin-left: $g0;
-    margin-bottom: $g-1;
-}
-::placeholder,
-.page_suptitle, .page_subtitle,
-.help_text{
-    font-family: 'segoe UI';
-}
-.main_header {
-    margin: 40px 4px;
-}
 
 .page_suptitle {
     letter-spacing: .14em;
@@ -98,4 +95,11 @@ label {
 .page_subtitle {
     font-size: .8em;
 }
+
+::placeholder,
+.page_suptitle, .page_subtitle,
+.help_text{
+    font-family: 'segoe UI';
+}
+
 
