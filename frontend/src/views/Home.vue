@@ -119,7 +119,7 @@
 		
 			const fetchSiteStatistics = async() => {
 				await axios
-					.get(`api/v1/statistics`)
+					.get(`api/v1/statistics/`)
 					.then((response: ResponseObjectType) => {
 						Object.assign(counts, response.data)
 					})

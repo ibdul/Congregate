@@ -11,6 +11,10 @@ to setup the frontend, run the line below in a command prompt while in the front
 npm install
 ```
 this should install all necessary libraries and dependencies to run the frontend.
+
+##### development
+to run the project for development
+* make a .env file that contains values similar to what is in **.env.example** file
 _______________
 
 ### Compiles and hot-reloads for development

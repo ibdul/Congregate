@@ -81,6 +81,7 @@
 							>
 							<field-set
 								field="Date/Time" 
+								placeholder="dd/mm/yyy hh:mm"
 								type="datetime-local"
 								:required="true"
 								v-model="data.start_date"

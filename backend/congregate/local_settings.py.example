@@ -1,0 +1,10 @@
+""" 
+
+file for keeping settings necessary for local development 
+
+"""
+
+CORS_ALLOWED_ORIGINS = [
+    'some urls that where frontend resides'
+]
+

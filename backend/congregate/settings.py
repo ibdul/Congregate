@@ -15,6 +15,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+FRONTEND_DIR = BASE_DIR.parent/'frontend'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -30,7 +32,9 @@ SECRET_KEY = envVars("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = envVars("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    ]
 
 
 # Application definition
@@ -70,7 +74,7 @@ ROOT_URLCONF = 'congregate.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [FRONTEND_DIR/'dist'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,10 +145,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #########################################################
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-    'http://127.0.0.1:8080',
-]
 
 SUPPORTED_INPUT_TYPES={
     ("text", "text"),
@@ -159,3 +159,13 @@ SUPPORTED_INPUT_TYPES={
 }
 
 ADMIN_ADDRESS = envVars("ADMIN_ADDRESS")
+
+STATICFILES_DIRS = [
+    FRONTEND_DIR/'dist'/'static',
+]
+
+try:
+    from .local_settings import * 
+except Exception as e:
+    print(e)
+    pass

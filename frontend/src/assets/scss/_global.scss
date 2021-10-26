@@ -36,7 +36,7 @@ label {
 
 .bleed{
     display: grid;
-    grid-template-columns: 1fr min(65ch, calc(100% - $g1)) 1fr;
+    grid-template-columns: 1fr minmax(auto, 65ch) 1fr;
     // gap: 32px;
 
     & > * {

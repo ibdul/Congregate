@@ -6,12 +6,15 @@ To allow and manage requests from the frontend, **django rest framework** was em
 __________
 
 ## Project setup
-to set the backend up, run the lines below in your command prompt.
+to set the backend up,
+
+* run the lines below in your command prompt.
 ```
 env\scripts\activate
 pip install -r requirements.txt
 ```
-then set environment variables like presented in the **.env.example** file.
+* set environment variables as presented in the **.env.example** file.
+* create and local_settings file and populate as instructed within **local_settings.py.example** file.
 
 ________________
 
