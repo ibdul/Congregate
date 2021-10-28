@@ -1,22 +1,29 @@
+# CONGREGATE VUE FRONTEND
+The frontend of the app was built using the **vue js** framework.  
 
-# CONGREGATE
+To send asynchronous requests to the backend, **axios** was used.
+__________________
 
-## Overview
-This is a webapp project that eases event hosting.  
-It allows easy ticketing and would be improved to include even more funtionalities.
+## Project setup
+to setup the frontend, run the line below in a command prompt while in the frontend folder.
 
-## Build Up
-This project comprises technologies that include:  
+```
+npm install
+```
+this should install all necessary libraries and dependencies to run the frontend.
 
-> #### on the frontend
-> * Vue js 3 + Typescript (vue CLI)  
-> * SASS
-> * ...
+##### development
+to run the project for development
+* make a .env file that contains values similar to what is in **.env.example** file
+_______________
 
-> #### on the backend
-> * Django
-> * Django rest framework
-> * ...
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-made with loads of love
+### Compiles and minifies for production
+```
+npm run build
+```
 
