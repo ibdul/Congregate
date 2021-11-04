@@ -19,6 +19,7 @@ env/
 develop-eggs/
 dist/
 downloads/
+staticfiles/
 eggs/
 lib/
 lib64/

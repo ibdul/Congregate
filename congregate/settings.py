@@ -31,9 +31,14 @@ SECRET_KEY = envVars("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = envVars("DEBUG")
+if (DEBUG=='True'):
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     ]
 
 
@@ -164,8 +169,13 @@ STATICFILES_DIRS = [
     FRONTEND_DIR/'dist'/'static',
 ]
 
+STATIC_ROOT="/collectedStaticFiles/"
+
 try:
     from .local_settings import * 
 except Exception as e:
-    print(e)
     pass
+
+### automatic heroku config
+import django_heroku
+django_heroku.settings(locals())
