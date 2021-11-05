@@ -33,7 +33,7 @@
 <style lang="scss">
 	
 	#app {
-		font-family: poppins, Avenir, Helvetica, Arial, sans-serif;
+		font-family: 'Poppins', Avenir, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 
