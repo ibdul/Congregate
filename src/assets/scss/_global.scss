@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500&display=swap');
+
 *{
     margin: 0;
     padding: 0;
@@ -99,7 +101,7 @@ label {
 ::placeholder,
 .page_suptitle, .page_subtitle,
 .help_text{
-    font-family: 'segoe UI';
+    font-family: 'Noto Sans', sans-serif;
 }
 
 
